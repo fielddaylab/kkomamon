@@ -5,7 +5,6 @@
 <meta name = "viewport" content = "width = device-width">
 <title>Kkomamon Fight</title>
 <script type = "text/javascript" src = "arisjs.js"></script>
-<script type = "text/javascript" src = "ARISInventoryInterface.js"></script>
     
 <script type = "text/javascript">
   document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
@@ -63,12 +62,13 @@
     kType = kTypePinkmoonaw;
     kHealth = kMaxHealths[kType];
 
-    //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
-    //alert("health: " + kHealth);
-    pHealth = 100;
+    pHealth = parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
+      //alert(pHealth);
+    //pHealth = 100;
     pLevel = 1;
-    //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
-    pXP = 100;
+    pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
+      //alert(pXP);
+    //pXP = 100;
     pName = "Phildo";
 
     turnProgress = -1;
@@ -167,21 +167,31 @@
     }
       
       
-      // update health and xp in ARIS
-      //setitemcount
+    // update health and xp in ARIS
+    setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
+    setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
       
   }
 
   function kill(fighter)
   {
-    if(fighter == k)
+    if(fighter == k) {
       alert("Hooray");
+      pXP = pXP + 10; 
+    }
     else
       alert("Boo");
 
+    // update health and xp in ARIS
+    setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
+    setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
+      
     setTimeout(function(){action(0, 3)}, 500);
   }
-
+    
+    
+    
+   
 </script>
 <style>
 div
