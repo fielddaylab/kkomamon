@@ -85,7 +85,6 @@
     kType = kTypePinkmoonaw;
     kHealth = kMaxHealths[kType];
 
-<<<<<<< HEAD
     pHealth = parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
       //alert(pHealth);
     //pHealth = 100;
@@ -93,14 +92,7 @@
     pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
       //alert(pXP);
     //pXP = 100;
-=======
-    //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
-    //alert("health: " + pHealth);
-    pHealth = 100;
-    pLevel = 2;
-    //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
-    pXP = 100;
->>>>>>> origin/master
+
     pName = "Phildo";
 
     turnProgress = -1;
@@ -201,40 +193,27 @@
     {
       turnProgress = -1;
     }
-<<<<<<< HEAD
-      
-      
+
     // update health and xp in ARIS
     setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
     setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
-      
-=======
-      // update health and xp in ARIS
-      //setitemcount
->>>>>>> c3cf9fba3bc37ebcfe81b12798b0a6caeceb2e75
+
   }
 
   function kill(fighter)
   {
-<<<<<<< HEAD
+
     if(fighter == k) {
-      alert("Hooray");
+      setScene(sceneWin);
       pXP = pXP + 10; 
     }
     else
-      alert("Boo");
+      setScene(sceneLose);
 
     // update health and xp in ARIS
     setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
     setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
-      
-    setTimeout(function(){action(0, 3)}, 500);
-=======
-    if(fighter == k)
-      setScene(sceneWin);
-    else
-      setScene(sceneLose);
->>>>>>> c3cf9fba3bc37ebcfe81b12798b0a6caeceb2e75
+   
   }
     
     
