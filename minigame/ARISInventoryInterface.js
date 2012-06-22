@@ -1,11 +1,7 @@
-
-
-
 function sendRequest(fn, params, calledByFunction)
 {
   var xmlhttp;
   xmlhttp=new XMLHttpRequest();
-  //xmlhttp.open("POST","../../../json.php/v1."+fn,false);
   xmlhttp.open("POST","dev.arisgames.org/server/json.php/v1."+fn,false); 
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xmlhttp.send(params); //Synchronous call
@@ -53,12 +49,12 @@ function getItemCountForPlayer(gameId, playerId, itemId) {
     sendRequest("items.getItemsForPlayer", JSON.stringify(inventoryObj));
     
     var allItems = data;
+    var itemCount = 0;
     for (item in allItems) {
         if (allItems[item] == itemId) {
             itemCount = allItems[item].qty;
         }
     }
-    
     return itemCount;
 }
 
@@ -95,6 +91,7 @@ function takeItemFromPlayer(gameId, playerId, itemId, qtyToTake) {
 function updateWebHook(gameId, webHookId, name, url) {
     
     var webHookObj = new Object();
+  //xmlhttp.open("POST","../../../json.php/v1."+fn,false);
     webHookObj.intGameID = gameId;
     webHookObj.intWebHookID = webHookId;
     webHookObj.strName = name;

@@ -17,6 +17,9 @@
     initialize();
   }
 
+  //Constants
+  var delay = 300;
+
   //Data
   var gameId; 
   var playerId;
@@ -64,7 +67,7 @@
     kHealth = kMaxHealths[kType];
 
     //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
-    //alert("health: " + kHealth);
+    //alert("health: " + pHealth);
     pHealth = 100;
     pLevel = 2;
     //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
@@ -121,7 +124,6 @@
       if(Math.random() > 0.3)
       {
         //Hit
-        //document.getElementById("kalert").innerHTML = "HIT";
         document.getElementById("kalert").style.backgroundImage = "url('images/hit.png')";
 
         if(attack == 0)
@@ -139,10 +141,9 @@
       else
       {
         //Miss
-        //document.getElementById("kalert").innerHTML = "MISS";
         document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
       }
-      setTimeout(function(){action(attack, state+1)}, 500);
+      setTimeout(function(){action(attack, state+1)}, delay);
     }
 
     if(state == 1)
@@ -151,7 +152,6 @@
       if(Math.random() > 0.3)
       {
         //Hit
-        //document.getElementById("palert").innerHTML = "HIT";
         document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
         pHealth-=kAttacks[kType];
         pHealth = Math.round(pHealth);
@@ -163,22 +163,17 @@
       else
       {
         //Miss
-        //document.getElementById("palert").innerHTML = "MISS";
         document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
-
       }
-      setTimeout(function(){action(attack, state+1)}, 500);
+      setTimeout(function(){action(attack, state+1)}, delay);
     }
 
     if(state == 2)
     {
       turnProgress = -1;
     }
-      
-      
       // update health and xp in ARIS
       //setitemcount
-      
   }
 
   function kill(fighter)
@@ -188,7 +183,7 @@
     else
       alert("Boo");
 
-    setTimeout(function(){action(0, 3)}, 500);
+    setTimeout(function(){action(0, 3)}, delay);
   }
 
 </script>
@@ -241,6 +236,9 @@ div
 
 .healthbar
 {
+  border-style:solid;
+  border-width:1px;
+  border-color:#FFFFFF;
   width:150px;
 }
 

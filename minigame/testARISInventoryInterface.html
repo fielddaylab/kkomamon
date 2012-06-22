@@ -1,10 +1,14 @@
 <html>
 <head>
-<script type="text/javascript" src="ARISInventoryInterface.js">
-
+<script type="text/javascript" src="ARISInventoryInterface.js"></script>
+<script>
+function doIt()
+{
+  alert(getItemCountForPlayer(996, 762, 1));
+}
 </script>
 </head>
-<body onload='getItemCountForPlayer(996, 762, 1)'>
+<body onload='doIt()'>
 <div id='playerLogs'> 
 </div>
 </body>
