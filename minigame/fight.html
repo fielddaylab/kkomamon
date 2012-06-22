@@ -23,13 +23,13 @@
   var k = 0;//Kkomamon
   var p = 1;//Player
 
-  var kTypeRed = 0;
-  var kTypeGreen = 1;
-  var kTypeBlue = 2;
-  var kTypeYellow = 3;
-  var kTypePink = 4;
+  var kTypeAji = 0;
+  var kTypeMusawa = 1;
+  var kTypeOrbital = 2;
+  var kTypeYongyong = 3;
+  var kTypePinkmoonaw = 4;
 
-  var kNames = new Array("a","b","c","d","e");
+  var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
   var kMaxHealths = new Array(100,120,130,140,200);
   var kAttacks = new Array(5,10,15,20,50);
   var pPunch = new Array(30,10,10,10,10);
@@ -60,7 +60,7 @@
     playerId = parseInt(params.playerid);
       
     //Get Stuff from Server
-    kType = kTypeRed;
+    kType = kTypePinkmoonaw;
     kHealth = kMaxHealths[kType];
 
     //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
@@ -76,14 +76,17 @@
 
     displayHealth(0); 
     displayHealth(1); 
-
-    document.getElementById("firebuttonimage").src = "lockedButton.png";
-    document.getElementById("kissbuttonimage").src = "lockedButton.png";
-    document.getElementById("punchbuttonimage").src = "punchButon.png";
+    
+    //Set up the images
+    document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".png')";
+    document.getElementById("player").src = "images/player.png";
+    document.getElementById("firebuttonimage").src = "images/lockedButton.png";
+    document.getElementById("kissbuttonimage").src = "images/lockedButton.png";
+    document.getElementById("punchbuttonimage").src = "images/punchButon.png";
     if(pLevel > 0)
-      document.getElementById("firebuttonimage").src = "fireButton.png";
+      document.getElementById("firebuttonimage").src = "images/fireButton.png";
     if(pLevel > 1)
-      document.getElementById("kissbuttonimage").src = "kissButton.png";
+      document.getElementById("kissbuttonimage").src = "images/kissButton.png";
   }
 
   function displayHealth(fighter)
@@ -260,7 +263,7 @@ div
   </div>
 </div><!-- loading -->
 
-<div id="fight" class="scene">
+<div style="background-image:url('images/background.jpg');" id="fight" class="scene">
 
   <div id="kkomamonHUD" class="HUD">
     <div id="kinfo" class="info" style="left:10px; top:10px;">
