@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name = "viewport" content = "width = device-width">
+<title>Kkomamon Fight</title>
+<script type = "text/javascript" src = "arisjs.js"></script>
+<script type = "text/javascript" src = "ARISInventoryInterface.js"></script>
+    
+<script type = "text/javascript">
+  document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
+
+  function loadMe()
+  {
+    document.getElementById("loading").style.display="none";
+    document.getElementById("fight").style.display="block";
+    initialize();
+  }
+
+  //Data
+  var gameId; 
+  var playerId;
+  var k = 0;//Kkomamon
+  var p = 1;//Player
+
+  var kTypeRed = 0;
+  var kTypeGreen = 1;
+  var kTypeBlue = 2;
+  var kTypeYellow = 3;
+  var kTypePink = 4;
+
+  var kNames = new Array("a","b","c","d","e");
+  var kMaxHealths = new Array(100,120,130,140,200);
+  var kAttacks = new Array(5,10,15,20,50);
+  var pPunch = new Array(30,10,10,10,10);
+  var pFire = new Array(10,30,20,20,20);
+  var pKiss = new Array(40,40,40,40,40);
+
+  //Variables
+  var kHealth;
+  var kType;
+
+  var pHealth;
+  var pLevel;
+  var pXP;
+  var pName;
+
+  var turnProgress;
+    
+  //Constants
+  var HEALTH_ITEM_ID = 6;
+  var XP_ITEM_ID = 7;  
+
+  function initialize()
+  {
+      
+    //Get PlayerID and GameID from URL
+    var params = parseURLParams(document.URL);
+    gameId = parseInt(params.gameid);
+    playerId = parseInt(params.playerid);
+      
+    //Get Stuff from Server
+    kType = kTypeRed;
+    kHealth = kMaxHealths[kType];
+
+    //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
+    //alert("health: " + kHealth);
+    pHealth = 100;
+    pLevel = 1;
+    //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
+    pXP = 100;
+    pName = "Phildo";
+
+    turnProgress = -1;
+    //End Server Get
+
+    displayHealth(0); 
+    displayHealth(1); 
+
+    document.getElementById("firebuttonimage").src = "lockedButton.png";
+    document.getElementById("kissbuttonimage").src = "lockedButton.png";
+    document.getElementById("punchbuttonimage").src = "punchButon.png";
+    if(pLevel > 0)
+      document.getElementById("firebuttonimage").src = "fireButton.png";
+    if(pLevel > 1)
+      document.getElementById("kissbuttonimage").src = "kissButton.png";
+  }
+
+  function displayHealth(fighter)
+  {
+    if(fighter == k)
+    {
+      document.getElementById("khealth").style.width = ((kHealth/kMaxHealths[kType])*146)+"px";
+      document.getElementById("kname").innerHTML = kNames[kType]+" ("+kHealth+"/"+kMaxHealths[kType]+")";
+    }
+    else
+    {
+      document.getElementById("phealth").style.width = ((pHealth/100)*146)+"px";
+      //document.getElementById("pname").innerHTML = pName+" ("+pHealth+"/100)"; // <-- SHOULD BE THIS
+      document.getElementById("bogusdiv").innerHTML = pName+" ("+pHealth+"/100)"; //BUT BECAUSE CSS SUCKS, IS THIS
+    }
+  }
+
+  function action(attack, state)
+  {
+    if(attack > pLevel || turnProgress > state) return;
+
+    document.getElementById("palert").innerHTML = "";
+    document.getElementById("kalert").innerHTML = "";
+    turnProgress = state+1;
+
+    if(state == 0)
+    {
+      //You Attack
+      if(Math.random() > 0.3)
+      {
+        //Hit
+        document.getElementById("kalert").innerHTML = "HIT";
+        if(attack == 0)
+          kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
+        if(attack == 1)
+          kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
+        if(attack == 2)
+          kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
+        kHealth = Math.round(kHealth);
+
+        if(kHealth < 0) kHealth = 0;
+        displayHealth(k);
+        if(kHealth == 0) { kill(k); return; }
+      }
+      else
+      {
+        //Miss
+        document.getElementById("kalert").innerHTML = "MISS";
+      }
+      setTimeout(function(){action(attack, state+1)}, 500);
+    }
+
+    if(state == 1)
+    {
+      //They Attack
+      if(Math.random() > 0.3)
+      {
+        //Hit
+        document.getElementById("palert").innerHTML = "HIT";
+        pHealth-=kAttacks[kType];
+        pHealth = Math.round(pHealth);
+  
+        if(pHealth < 0) pHealth = 0;
+        displayHealth(p);
+        if(pHealth == 0) { kill(p); return; }
+      }
+      else
+      {
+        //Miss
+        document.getElementById("palert").innerHTML = "MISS";
+      }
+      setTimeout(function(){action(attack, state+1)}, 500);
+    }
+
+    if(state == 2)
+    {
+      turnProgress = -1;
+    }
+      
+      
+      // update health and xp in ARIS
+      //setitemcount
+      
+  }
+
+  function kill(fighter)
+  {
+    if(fighter == k)
+      alert("Hooray");
+    else
+      alert("Boo");
+
+    setTimeout(function(){action(0, 3)}, 500);
+  }
+
+</script>
+<style>
+div
+{
+  border-style:solid; 
+  border-width:1px;
+  padding:0px;
+}
+
+.scene
+{
+  width:100%;
+  height:100%;
+  display:none;
+}
+
+.HUD
+{
+  margin:10px;
+  width:300px;
+  height:138px;
+  position:relative;
+}
+
+.button
+{
+  float:left; 
+  margin-left:10px; 
+  margin-top:10px; 
+  width:86px; 
+  height:80px;
+}
+
+.info
+{
+  position:absolute;
+}
+
+.name
+{
+  height:25px;
+}
+
+.healthbar
+{
+  width:150px;
+}
+
+.health
+{
+  margin:2px;
+  height:10px;
+  background-color:#00FF00;
+}
+
+.fighter
+{
+  position:absolute;
+  height:180px;
+  width:160px;
+}
+
+.alert
+{
+  position:absolute;
+  height:75px;
+  width:150px;
+  top:54px;
+  left:5px;
+}
+</style>
+</head>
+<body onLoad="loadMe()" style="margin:0px; padding:0px;">
+<div id="fightScreen" style="position:relative; margin:0px; width:320px; height:416px;">
+
+<div id="loading" class="scene" style="background-color:#000000; display:block;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  loading...
+  </div>
+</div><!-- loading -->
+
+<div id="fight" class="scene">
+
+  <div id="kkomamonHUD" class="HUD">
+    <div id="kinfo" class="info" style="left:10px; top:10px;">
+      <div id="khealthbar" class="healthbar">
+        <div id="khealth" class="health">
+        </div>
+      </div>
+      <div id="kname" class="name">
+        Kkomamon
+      </div>
+    </div>
+    <div id="kkomamon" class="fighter" style="left:140px; top:0px;">
+      <div id="kalert" class="alert">
+      </div>
+    </div>
+  </div>
+
+  <div id="playerHUD" class="HUD">
+    <div id="pinfo" class="info" style="left:140px; top:89px;">
+      <div id="pname" class="name" style="position:relative;">
+        <div id="bogusdiv" style="position:absolute; bottom:0px; right:0px;">
+          You
+        </div>
+      </div>
+      <div id="phealthbar" class="healthbar">
+        <div id="phealth" class="health">
+        </div>
+      </div>
+    </div>
+    <div id="player" class="fighter" style="left:0px; top:-42px;">
+      <div id="palert" class="alert">
+      </div>
+    </div>
+  </div>
+
+  <div id="actions" style="margin:10px; width:300px; height:100px;">
+    <div id="punch" class="button" onClick="action(0, 0)">
+      <img id="punchbuttonimage" src="" />
+    </div>
+    <div id="fire" class="button" onClick="action(1, 0)">
+      <img id="firebuttonimage" src="" />
+    </div>
+    <div id="kiss" class="button" onClick="action(2, 0)">
+      <img id="kissbuttonimage" src="" />
+    </div>
+  </div>
+
+</div><!-- fight -->
+
+</div><!-- body -->
+</body>
+</html>
