@@ -60,13 +60,13 @@
     playerId = parseInt(params.playerid);
       
     //Get Stuff from Server
-    kType = kTypePinkmoonaw;
+    kType = kTypeMusawa;
     kHealth = kMaxHealths[kType];
 
     //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
     //alert("health: " + kHealth);
     pHealth = 100;
-    pLevel = 1;
+    pLevel = 2;
     //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
     pXP = 100;
     pName = "Phildo";
@@ -79,10 +79,10 @@
     
     //Set up the images
     document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".png')";
-    document.getElementById("player").src = "images/player.png";
+    document.getElementById("player").style.backgroundImage = "url('images/player.png')";
     document.getElementById("firebuttonimage").src = "images/lockedButton.png";
     document.getElementById("kissbuttonimage").src = "images/lockedButton.png";
-    document.getElementById("punchbuttonimage").src = "images/punchButon.png";
+    document.getElementById("punchbuttonimage").src = "images/punchButton.png";
     if(pLevel > 0)
       document.getElementById("firebuttonimage").src = "images/fireButton.png";
     if(pLevel > 1)
@@ -109,7 +109,10 @@
     if(attack > pLevel || turnProgress > state) return;
 
     document.getElementById("palert").innerHTML = "";
+    document.getElementById("palert").style.backgroundImage = "";
     document.getElementById("kalert").innerHTML = "";
+    document.getElementById("kalert").style.backgroundImage = "";
+
     turnProgress = state+1;
 
     if(state == 0)
@@ -118,7 +121,9 @@
       if(Math.random() > 0.3)
       {
         //Hit
-        document.getElementById("kalert").innerHTML = "HIT";
+        //document.getElementById("kalert").innerHTML = "HIT";
+        document.getElementById("kalert").style.backgroundImage = "url('images/hit.png')";
+
         if(attack == 0)
           kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
         if(attack == 1)
@@ -134,7 +139,8 @@
       else
       {
         //Miss
-        document.getElementById("kalert").innerHTML = "MISS";
+        //document.getElementById("kalert").innerHTML = "MISS";
+        document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
       }
       setTimeout(function(){action(attack, state+1)}, 500);
     }
@@ -145,7 +151,8 @@
       if(Math.random() > 0.3)
       {
         //Hit
-        document.getElementById("palert").innerHTML = "HIT";
+        //document.getElementById("palert").innerHTML = "HIT";
+        document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
         pHealth-=kAttacks[kType];
         pHealth = Math.round(pHealth);
   
@@ -156,7 +163,9 @@
       else
       {
         //Miss
-        document.getElementById("palert").innerHTML = "MISS";
+        //document.getElementById("palert").innerHTML = "MISS";
+        document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
+
       }
       setTimeout(function(){action(attack, state+1)}, 500);
     }
@@ -186,9 +195,12 @@
 <style>
 div
 {
+  /*
   border-style:solid; 
   border-width:1px;
+  */
   padding:0px;
+  color:white;
 }
 
 .scene
@@ -213,6 +225,8 @@ div
   margin-top:10px; 
   width:86px; 
   height:80px;
+  border-style:solid; 
+  border-width:1px;
 }
 
 .info
