@@ -11,12 +11,35 @@
 
   function loadMe()
   {
-    document.getElementById("loading").style.display="none";
-    document.getElementById("fight").style.display="block";
+    setScene(sceneFight);
     initialize();
   }
 
-  //Data
+  function setScene(scene)
+  {
+    document.getElementById("loading").style.display="none";
+    document.getElementById("fight").style.display="none";
+    document.getElementById("win").style.display="none";
+    document.getElementById("lose").style.display="none";
+
+    if(scene == 0)
+      document.getElementById("loading").style.display="block";
+    else if(scene == 1)
+      document.getElementById("fight").style.display="block";
+    else if(scene == 2)
+      document.getElementById("win").style.display="block";
+    else if(scene == 3)
+      document.getElementById("lose").style.display="block";
+  }
+
+  //Constants
+  var delay = 300;
+  var sceneLoading = 0;
+  var sceneFight = 1;
+  var sceneWin = 2;
+  var sceneLose = 3;
+
+  //Game Data
   var gameId; 
   var playerId;
   var k = 0;//Kkomamon
@@ -59,7 +82,7 @@
     playerId = parseInt(params.playerid);
       
     //Get Stuff from Server
-    kType = kTypeMusawa;
+    kType = kTypePinkmoonaw;
     kHealth = kMaxHealths[kType];
 
 <<<<<<< HEAD
@@ -72,7 +95,7 @@
     //pXP = 100;
 =======
     //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
-    //alert("health: " + kHealth);
+    //alert("health: " + pHealth);
     pHealth = 100;
     pLevel = 2;
     //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
@@ -130,7 +153,6 @@
       if(Math.random() > 0.3)
       {
         //Hit
-        //document.getElementById("kalert").innerHTML = "HIT";
         document.getElementById("kalert").style.backgroundImage = "url('images/hit.png')";
 
         if(attack == 0)
@@ -143,15 +165,14 @@
 
         if(kHealth < 0) kHealth = 0;
         displayHealth(k);
-        if(kHealth == 0) { kill(k); return; }
+        if(kHealth == 0) { setTimeout(function(){kill(k)}, delay); return; }
       }
       else
       {
         //Miss
-        //document.getElementById("kalert").innerHTML = "MISS";
         document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
       }
-      setTimeout(function(){action(attack, state+1)}, 500);
+      setTimeout(function(){action(attack, state+1)}, delay);
     }
 
     if(state == 1)
@@ -160,39 +181,42 @@
       if(Math.random() > 0.3)
       {
         //Hit
-        //document.getElementById("palert").innerHTML = "HIT";
         document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
         pHealth-=kAttacks[kType];
         pHealth = Math.round(pHealth);
   
         if(pHealth < 0) pHealth = 0;
         displayHealth(p);
-        if(pHealth == 0) { kill(p); return; }
+        if(pHealth == 0) { setTimeout(function(){kill(p)}, delay); return; }
       }
       else
       {
         //Miss
-        //document.getElementById("palert").innerHTML = "MISS";
         document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
-
       }
-      setTimeout(function(){action(attack, state+1)}, 500);
+      setTimeout(function(){action(attack, state+1)}, delay);
     }
 
     if(state == 2)
     {
       turnProgress = -1;
     }
+<<<<<<< HEAD
       
       
     // update health and xp in ARIS
     setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
     setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
       
+=======
+      // update health and xp in ARIS
+      //setitemcount
+>>>>>>> c3cf9fba3bc37ebcfe81b12798b0a6caeceb2e75
   }
 
   function kill(fighter)
   {
+<<<<<<< HEAD
     if(fighter == k) {
       alert("Hooray");
       pXP = pXP + 10; 
@@ -205,6 +229,12 @@
     setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
       
     setTimeout(function(){action(0, 3)}, 500);
+=======
+    if(fighter == k)
+      setScene(sceneWin);
+    else
+      setScene(sceneLose);
+>>>>>>> c3cf9fba3bc37ebcfe81b12798b0a6caeceb2e75
   }
     
     
@@ -260,6 +290,9 @@ div
 
 .healthbar
 {
+  border-style:solid;
+  border-width:1px;
+  border-color:#FFFFFF;
   width:150px;
 }
 
@@ -345,6 +378,18 @@ div
   </div>
 
 </div><!-- fight -->
+
+<div id="win" class="scene" style="background-color:#000000;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  win
+  </div>
+</div><!-- win -->
+
+<div id="lose" class="scene" style="background-color:#000000;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  lose
+  </div>
+</div><!-- lose -->
 
 </div><!-- body -->
 </body>
