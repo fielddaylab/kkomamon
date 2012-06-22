@@ -12,15 +12,35 @@
 
   function loadMe()
   {
-    document.getElementById("loading").style.display="none";
-    document.getElementById("fight").style.display="block";
+    setScene(sceneFight);
     initialize();
+  }
+
+  function setScene(scene)
+  {
+    document.getElementById("loading").style.display="none";
+    document.getElementById("fight").style.display="none";
+    document.getElementById("win").style.display="none";
+    document.getElementById("lose").style.display="none";
+
+    if(scene == 0)
+      document.getElementById("loading").style.display="block";
+    else if(scene == 1)
+      document.getElementById("fight").style.display="block";
+    else if(scene == 2)
+      document.getElementById("win").style.display="block";
+    else if(scene == 3)
+      document.getElementById("lose").style.display="block";
   }
 
   //Constants
   var delay = 300;
+  var sceneLoading = 0;
+  var sceneFight = 1;
+  var sceneWin = 2;
+  var sceneLose = 3;
 
-  //Data
+  //Game Data
   var gameId; 
   var playerId;
   var k = 0;//Kkomamon
@@ -63,7 +83,7 @@
     playerId = parseInt(params.playerid);
       
     //Get Stuff from Server
-    kType = kTypeMusawa;
+    kType = kTypePinkmoonaw;
     kHealth = kMaxHealths[kType];
 
     //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
@@ -136,7 +156,7 @@
 
         if(kHealth < 0) kHealth = 0;
         displayHealth(k);
-        if(kHealth == 0) { kill(k); return; }
+        if(kHealth == 0) { setTimeout(function(){kill(k)}, delay); return; }
       }
       else
       {
@@ -158,7 +178,7 @@
   
         if(pHealth < 0) pHealth = 0;
         displayHealth(p);
-        if(pHealth == 0) { kill(p); return; }
+        if(pHealth == 0) { setTimeout(function(){kill(p)}, delay); return; }
       }
       else
       {
@@ -179,11 +199,9 @@
   function kill(fighter)
   {
     if(fighter == k)
-      alert("Hooray");
+      setScene(sceneWin);
     else
-      alert("Boo");
-
-    setTimeout(function(){action(0, 3)}, delay);
+      setScene(sceneLose);
   }
 
 </script>
@@ -324,6 +342,18 @@ div
   </div>
 
 </div><!-- fight -->
+
+<div id="win" class="scene" style="background-color:#000000;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  win
+  </div>
+</div><!-- win -->
+
+<div id="lose" class="scene" style="background-color:#000000;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  lose
+  </div>
+</div><!-- lose -->
 
 </div><!-- body -->
 </body>
