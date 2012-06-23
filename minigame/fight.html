@@ -63,7 +63,7 @@
     playerId = parseInt(params.playerid);
       
     //Get Stuff from Server
-    kType = kTypeMusawa;
+    kType = kTypeAji;
     kHealth = kMaxHealths[kType];
 
     //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
@@ -81,8 +81,8 @@
     displayHealth(1); 
     
     //Set up the images
-    document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".png')";
-    document.getElementById("player").style.backgroundImage = "url('images/player.png')";
+    document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".gif')";
+    document.getElementById("player").style.backgroundImage = "url('images/player.gif')";
     document.getElementById("firebuttonimage").src = "images/lockedButton.png";
     document.getElementById("kissbuttonimage").src = "images/lockedButton.png";
     document.getElementById("punchbuttonimage").src = "images/punchButton.png";
@@ -196,6 +196,8 @@ div
   */
   padding:0px;
   color:white;
+  font-family:Noteworthy;
+    font-weight:Bold;
 }
 
 .scene
@@ -275,7 +277,7 @@ div
   </div>
 </div><!-- loading -->
 
-<div style="background-image:url('images/background.jpg');" id="fight" class="scene">
+<div style="background-image:url('images/background6.jpg');" id="fight" class="scene">
 
   <div id="kkomamonHUD" class="HUD">
     <div id="kinfo" class="info" style="left:10px; top:10px;">
