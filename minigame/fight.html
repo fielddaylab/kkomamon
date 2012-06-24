@@ -5,22 +5,41 @@
 <meta name = "viewport" content = "width = device-width">
 <title>Kkomamon Fight</title>
 <script type = "text/javascript" src = "arisjs.js"></script>
-<script type = "text/javascript" src = "ARISInventoryInterface.js"></script>
     
 <script type = "text/javascript">
   document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
 
   function loadMe()
   {
-    document.getElementById("loading").style.display="none";
-    document.getElementById("fight").style.display="block";
+    setScene(sceneFight);
     initialize();
+  }
+
+  function setScene(scene)
+  {
+    document.getElementById("loading").style.display="none";
+    document.getElementById("fight").style.display="none";
+    document.getElementById("win").style.display="none";
+    document.getElementById("lose").style.display="none";
+
+    if(scene == 0)
+      document.getElementById("loading").style.display="block";
+    else if(scene == 1)
+      document.getElementById("fight").style.display="block";
+    else if(scene == 2)
+      document.getElementById("win").style.display="block";
+    else if(scene == 3)
+      document.getElementById("lose").style.display="block";
   }
 
   //Constants
   var delay = 300;
+  var sceneLoading = 0;
+  var sceneFight = 1;
+  var sceneWin = 2;
+  var sceneLose = 3;
 
-  //Data
+  //Game Data
   var gameId; 
   var playerId;
   var k = 0;//Kkomamon
@@ -66,12 +85,14 @@
     kType = kTypeAji;
     kHealth = kMaxHealths[kType];
 
-    //pHealth = getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID);
-    //alert("health: " + pHealth);
-    pHealth = 100;
-    pLevel = 2;
-    //pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
-    pXP = 100;
+    pHealth = parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
+      //alert(pHealth);
+    //pHealth = 100;
+    pLevel = 1;
+    pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
+      //alert(pXP);
+    //pXP = 100;
+
     pName = "Phildo";
 
     turnProgress = -1;
@@ -136,7 +157,7 @@
 
         if(kHealth < 0) kHealth = 0;
         displayHealth(k);
-        if(kHealth == 0) { kill(k); return; }
+        if(kHealth == 0) { setTimeout(function(){kill(k)}, delay); return; }
       }
       else
       {
@@ -158,7 +179,7 @@
   
         if(pHealth < 0) pHealth = 0;
         displayHealth(p);
-        if(pHealth == 0) { kill(p); return; }
+        if(pHealth == 0) { setTimeout(function(){kill(p)}, delay); return; }
       }
       else
       {
@@ -172,20 +193,32 @@
     {
       turnProgress = -1;
     }
-      // update health and xp in ARIS
-      //setitemcount
+
+    // update health and xp in ARIS
+    setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
+    setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
+
   }
 
   function kill(fighter)
   {
-    if(fighter == k)
-      alert("Hooray");
+
+    if(fighter == k) {
+      setScene(sceneWin);
+      pXP = pXP + 10; 
+    }
     else
-      alert("Boo");
+      setScene(sceneLose);
 
-    setTimeout(function(){action(0, 3)}, delay);
+    // update health and xp in ARIS
+    setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
+    setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
+   
   }
-
+    
+    
+    
+   
 </script>
 <style>
 div
@@ -326,6 +359,18 @@ div
   </div>
 
 </div><!-- fight -->
+
+<div id="win" class="scene" style="background-color:#000000;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  win
+  </div>
+</div><!-- win -->
+
+<div id="lose" class="scene" style="background-color:#000000;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  lose
+  </div>
+</div><!-- lose -->
 
 </div><!-- body -->
 </body>
