@@ -3,6 +3,20 @@ function closeMe()
   document.location.href = "aris://closeMe";
 }
 
+function prepare(mediaId)
+{
+    document.location.href = "aris://media/prepare/" + mediaId;
+}
+
+function play(mediaId)
+{
+    document.location.href = "aris://media/play/" + mediaId;
+}
+
+function stop(mediaId)
+{
+    document.location.href = "aris://media/stop/" + mediaId;
+}
 
 function parseURLParams(url) {
     var queryStart = url.indexOf("?") + 1;
