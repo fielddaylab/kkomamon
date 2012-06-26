@@ -57,6 +57,15 @@
   var pPunch = new Array(30,10,10,10,10);
   var pFire = new Array(10,30,20,20,20);
   var pKiss = new Array(40,40,40,40,40);
+    
+  //Audio Mapping
+    var kMediaIdMusic = 29322;
+    var kMediaIdMiss = 0;
+    var kMediaIdPunch = 0;
+    var kMediaIdFire = 0;
+    var kMediaIdKiss = 0;
+    var kMediaIdWin = 0;
+    var kMediaIdLoose = 0;
 
   //Variables
   var kHealth;
@@ -111,6 +120,8 @@
       document.getElementById("firebuttonimage").src = "images/fireButton.png";
     if(pLevel > 1)
       document.getElementById("kissbuttonimage").src = "images/kissButton.png";
+      
+    //Start Music
   }
 
   function displayHealth(fighter)
