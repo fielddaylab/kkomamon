@@ -10,7 +10,15 @@ function prepare(mediaId)
 
 function play(mediaId)
 {
+    console.log("Play Audio");
     document.location.href = "aris://media/play/" + mediaId;
+    /*
+    var xmlhttp;
+    xmlhttp=new XMLHttpRequest();
+    xmlhttp.open("GET","aris://media/play/"+mediaId); 
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send();
+     */
 }
 
 function stop(mediaId)
@@ -43,7 +51,6 @@ function sendRequest(fn, params, calledByFunction)
 {
     var xmlhttp;
     xmlhttp=new XMLHttpRequest();
-    //xmlhttp.open("POST","../../../json.php/v1."+fn,false);
     xmlhttp.open("POST","http://dev.arisgames.org/server/json.php/v1."+fn,false); 
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(params); //Synchronous call

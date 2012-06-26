@@ -62,7 +62,7 @@
     var kMediaIdMusic = 29322;
     var kMediaIdMiss = 0;
     var kMediaIdPunch = 0;
-    var kMediaIdFire = 0;
+    var kMediaIdFire = 29323;
     var kMediaIdKiss = 0;
     var kMediaIdWin = 0;
     var kMediaIdLoose = 0;
@@ -87,8 +87,8 @@
       
     //Get PlayerID and GameID from URL
     var params = parseURLParams(document.URL);
-    gameId = parseInt(params.gameid);
-    playerId = parseInt(params.playerid);
+    gameId = parseInt(params.gameId);
+    playerId = parseInt(params.playerId);
       
     //Get Stuff from Server
     kType = kTypeAji;
@@ -121,7 +121,8 @@
     if(pLevel > 1)
       document.getElementById("kissbuttonimage").src = "images/kissButton.png";
       
-    //Start Music
+      //Start Music
+      play(kMediaIdMusic);
   }
 
   function displayHealth(fighter)
@@ -141,7 +142,7 @@
 
   function action(attack, state)
   {
-    if(attack > pLevel || turnProgress > state) return;
+      if(attack > pLevel || turnProgress > state) return;
 
     document.getElementById("palert").innerHTML = "";
     document.getElementById("palert").style.backgroundImage = "";
