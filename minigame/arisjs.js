@@ -1,24 +1,26 @@
 function closeMe()
 {
-  document.location.href = "aris://closeMe";
+  window.location = "aris://closeMe";
 }
 
-function prepare(mediaId)
+function prepareMedia(mediaId)
 {
-    console.log("Prepare Media:" + mediaId);
-    document.location.href = "aris://media/prepare/" + mediaId;
+    window.location = "aris://media/prepare/" + mediaId;
 }
 
-function play(mediaId)
+function playMedia(mediaId)
 {
-    console.log("Play Media:" + mediaId);
-    document.location.href = "aris://media/play/" + mediaId;
+   window.location = "aris://media/play/" + mediaId;
 }
 
-function stop(mediaId)
+function stopMedia(mediaId)
 {
-    console.log("Stop Media:" + mediaId);
-    document.location.href = "aris://media/stop/" + mediaId;
+    window.location = "aris://media/stop/" + mediaId;
+}
+
+function setMediaVolume(mediaId, volume)
+{
+    window.location = "aris://media/setVolume/" + mediaId + "/" + volume;
 }
 
 function parseURLParams(url) {

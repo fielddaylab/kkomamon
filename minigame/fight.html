@@ -122,16 +122,26 @@ function initialize()
         document.getElementById("kissbuttonimage").src = "images/kissButton.png";
 
     //Begin Precaching Media
-    prepare(kMediaIdMiss); 
-    prepare(kMediaIdPunch); 
-    prepare(kMediaIdFire); 
-    prepare(kMediaIdKiss); 
-    prepare(kMediaIdWin); 
-    prepare(kMediaIdLoose); 
+    prepareMedia(kMediaIdMusic);
+    setMediaVolume(kMediaIdMusic,0.5);
+    prepareMedia(kMediaIdMiss); 
+    prepareMedia(kMediaIdPunch); 
+    prepareMedia(kMediaIdFire); 
+    prepareMedia(kMediaIdKiss); 
+    prepareMedia(kMediaIdWin); 
+    prepareMedia(kMediaIdLoose); 
 
     //Start Music
-    play(kMediaIdMusic);
+    playMedia(kMediaIdMusic);
 }
+    
+    function pause(millis) 
+    {
+        var date = new Date();
+        var curDate = null;
+        do { curDate = new Date(); } 
+        while(curDate-date < millis)
+    }
 
 function displayHealth(fighter)
 {
@@ -161,7 +171,7 @@ function action(attack, state)
 
     if(state == 0)
     {
-        //You Attack
+        //You Attack        
         if(Math.random() > 0.3)
         {
             //Hit
@@ -169,16 +179,16 @@ function action(attack, state)
 
             if(attack == 0){
                 kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
-                play(kMediaIdPunch); 
+                playMedia(kMediaIdPunch); 
             }
             if(attack == 1) {
                 kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
-                play(kMediaIdFire);
+                playMedia(kMediaIdFire);
             }
 
             if(attack == 2) {
                 kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
-                play(kMediaIdKiss); 
+                playMedia(kMediaIdKiss); 
             }
             kHealth = Math.round(kHealth);
 
@@ -190,7 +200,7 @@ function action(attack, state)
         {
             //Miss
             document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
-            play(kMediaIdMiss); 
+            playMedia(kMediaIdMiss); 
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
@@ -203,7 +213,7 @@ function action(attack, state)
         {
             //Hit
             document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
-            play(kMediaIdPunch); 
+            playMedia(kMediaIdPunch); 
             pHealth-=kAttacks[kType];
             pHealth = Math.round(pHealth);
 
@@ -215,7 +225,7 @@ function action(attack, state)
         {
             //Miss
             document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
-            play(kMediaIdMiss); 
+            playMedia(kMediaIdMiss); 
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
@@ -233,19 +243,18 @@ function action(attack, state)
 }
 
 function kill(fighter)
-{
+{   
+    setMediaVolume(kMediaIdMusic,0.0);
 
     if(fighter == k) {
-        stop(kMediaIdMusic);
-        play(kMediaIdWin);
+        playMedia(kMediaIdWin);
         setScene(sceneWin);
         pXP = pXP + 10; 
     }
-    else
-        stop(kMediaIdMusic);
-    play(kMediaIdLoose);
-    setScene(sceneLose);
-
+    else {
+        playMedia(kMediaIdLoose);
+        setScene(sceneLose);
+    }
     // update health and xp in ARIS
     setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
     setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
@@ -259,13 +268,9 @@ function kill(fighter)
 <style>
 div
 {
-  /*
-  border-style:solid; 
-  border-width:1px;
-  */
-  padding:0px;
-  color:white;
-  font-family:Noteworthy;
+    padding:0px;
+    color:white;
+    font-family:Noteworthy;
     font-weight:Bold;
 }
 
@@ -346,14 +351,15 @@ user-select:none;
 <body onLoad="loadMe()" style="margin:0px; padding:0px;">
 <div id="fightScreen" style="position:relative; margin:0px; width:320px; height:416px;">
 
+<!-- Loading State -->
 <div id="loading" class="scene" style="background-color:#000000; display:block;">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
   loading...
   </div>
-</div><!-- loading -->
+</div>
 
+<!-- Fight State -->    
 <div style="background-image:url('images/background7.jpg');" id="fight" class="scene">
-
   <div id="kkomamonHUD" class="HUD">
     <div id="kinfo" class="info" style="left:10px; top:10px;">
       <div id="khealthbar" class="healthbar">
@@ -399,20 +405,21 @@ user-select:none;
       <img id="kissbuttonimage" src="" />
     </div>
   </div>
+</div>
 
-</div><!-- fight -->
-
+<!-- Win State -->
 <div id="win" class="scene" style="background-color:#000000;">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
- YOU WIN
+      YOU WIN
   </div>
-</div><!-- win -->
+</div>
 
+<!-- Loose State -->    
 <div id="lose" class="scene" style="background-color:#000000;">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
-  YOU LOOSE
+      YOU LOOSE
   </div>
-</div><!-- lose -->
+</div>
 
 </div><!-- body -->
 </body>
