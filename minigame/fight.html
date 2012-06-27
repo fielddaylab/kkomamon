@@ -60,12 +60,12 @@
     
   //Audio Mapping
     var kMediaIdMusic = 29322;
-    var kMediaIdMiss = 0;
-    var kMediaIdPunch = 0;
+    var kMediaIdMiss = 29345;
+    var kMediaIdPunch = 29354;
     var kMediaIdFire = 29323;
-    var kMediaIdKiss = 0;
-    var kMediaIdWin = 0;
-    var kMediaIdLoose = 0;
+    var kMediaIdKiss = 29356;
+    var kMediaIdWin = 29360;
+    var kMediaIdLoose = 29358;
 
   //Variables
   var kHealth;
@@ -120,9 +120,17 @@
       document.getElementById("firebuttonimage").src = "images/fireButton.png";
     if(pLevel > 1)
       document.getElementById("kissbuttonimage").src = "images/kissButton.png";
-      
-      //Start Music
-      play(kMediaIdMusic);
+     
+     //Begin Precaching Media
+      prepare(kMediaIdMiss); 
+      prepare(kMediaIdPunch); 
+      prepare(kMediaIdFire); 
+      prepare(kMediaIdKiss); 
+      prepare(kMediaIdWin); 
+      prepare(kMediaIdLoose); 
+
+     //Start Music
+     play(kMediaIdMusic);
   }
 
   function displayHealth(fighter)
@@ -159,12 +167,19 @@
         //Hit
         document.getElementById("kalert").style.backgroundImage = "url('images/hit.png')";
 
-        if(attack == 0)
-          kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
-        if(attack == 1)
-          kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
-        if(attack == 2)
-          kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
+        if(attack == 0){
+            kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
+            play(kMediaIdPunch); 
+        }
+        if(attack == 1) {
+            kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
+            play(kMediaIdFire);
+        }
+
+        if(attack == 2) {
+            kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
+            play(kMediaIdKiss); 
+        }
         kHealth = Math.round(kHealth);
 
         if(kHealth < 0) kHealth = 0;
@@ -175,6 +190,8 @@
       {
         //Miss
         document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
+        play(kMediaIdMiss); 
+
       }
       setTimeout(function(){action(attack, state+1)}, delay);
     }
@@ -186,6 +203,7 @@
       {
         //Hit
         document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
+        play(kMediaIdPunch); 
         pHealth-=kAttacks[kType];
         pHealth = Math.round(pHealth);
   
@@ -197,6 +215,8 @@
       {
         //Miss
         document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
+        play(kMediaIdMiss); 
+
       }
       setTimeout(function(){action(attack, state+1)}, delay);
     }
@@ -216,10 +236,14 @@
   {
 
     if(fighter == k) {
+        stop(kMediaIdMusic);
+        play(kMediaIdWin);
       setScene(sceneWin);
       pXP = pXP + 10; 
     }
     else
+      stop(kMediaIdMusic);
+      play(kMediaIdLoose);
       setScene(sceneLose);
 
     // update health and xp in ARIS
@@ -380,13 +404,13 @@ user-select:none;
 
 <div id="win" class="scene" style="background-color:#000000;">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
-  win
+ YOU WIN
   </div>
 </div><!-- win -->
 
 <div id="lose" class="scene" style="background-color:#000000;">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
-  lose
+  YOU LOOSE
   </div>
 </div><!-- lose -->
 

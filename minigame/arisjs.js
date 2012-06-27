@@ -5,24 +5,19 @@ function closeMe()
 
 function prepare(mediaId)
 {
+    console.log("Prepare Media:" + mediaId);
     document.location.href = "aris://media/prepare/" + mediaId;
 }
 
 function play(mediaId)
 {
-    console.log("Play Audio");
+    console.log("Play Media:" + mediaId);
     document.location.href = "aris://media/play/" + mediaId;
-    /*
-    var xmlhttp;
-    xmlhttp=new XMLHttpRequest();
-    xmlhttp.open("GET","aris://media/play/"+mediaId); 
-    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.send();
-     */
 }
 
 function stop(mediaId)
 {
+    console.log("Stop Media:" + mediaId);
     document.location.href = "aris://media/stop/" + mediaId;
 }
 
