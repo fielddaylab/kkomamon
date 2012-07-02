@@ -1,26 +1,53 @@
+var requestsQueue = new Array();
+var isCurrentlyCalling = false;
+
+function enqueue(nextRequest)
+{
+    requestsQueue.push(nextRequest);
+    if(!isCurrentlyCalling) dequeue();
+}
+
+function dequeue()
+{
+    if(requestsQueue.length()) window.location = requestsQueue.shift();
+}
+
+function isCurrentlyCalling()
+{
+    alert("Is Calling");
+    isCurrentlyCalling = true;
+}
+
+function isNotCurrentlyCalling()
+{
+    alert("Is Not Calling");
+    isCurrentlyCalling = false;
+    dequeue();
+}
+
 function closeMe()
 {
-  window.location = "aris://closeMe";
+    enqueue("aris://closeMe");
 }
 
 function prepareMedia(mediaId)
 {
-    window.location = "aris://media/prepare/" + mediaId;
+    enqueue("aris://media/prepare/" + mediaId);
 }
 
 function playMedia(mediaId)
 {
-   window.location = "aris://media/play/" + mediaId;
+    enqueue("aris://media/play/" + mediaId);
 }
 
 function stopMedia(mediaId)
 {
-    window.location = "aris://media/stop/" + mediaId;
+    enqueue("aris://media/stop/" + mediaId);
 }
 
 function setMediaVolume(mediaId, volume)
 {
-    window.location = "aris://media/setVolume/" + mediaId + "/" + volume;
+    enqueue("aris://media/setVolume/" + mediaId + "/" + volume);
 }
 
 function parseURLParams(url) {
