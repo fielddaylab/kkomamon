@@ -4,7 +4,7 @@ var isCurrentlyCalling = false;
 function enqueue(nextRequest)
 {
     requestsQueue.push(nextRequest);
-    if(!isCurrentlyCalling) dequeue();
+    if(!isCurrentlyCalling) dequeue(); //comment
 }
 
 function dequeue()
