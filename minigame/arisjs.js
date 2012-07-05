@@ -1,27 +1,25 @@
 var requestsQueue = new Array();
-var isCurrentlyCalling = false;
+var currentlyCalling = false;
 
 function enqueue(nextRequest)
 {
     requestsQueue.push(nextRequest);
-    if(!isCurrentlyCalling) dequeue(); //comment
+    if(!currentlyCalling) dequeue();
 }
 
 function dequeue()
 {
-    if(requestsQueue.length()) window.location = requestsQueue.shift();
+    if(requestsQueue.length) window.location = requestsQueue.shift();
 }
 
 function isCurrentlyCalling()
 {
-    alert("Is Calling");
-    isCurrentlyCalling = true;
+    currentlyCalling = true;
 }
 
 function isNotCurrentlyCalling()
 {
-    alert("Is Not Calling");
-    isCurrentlyCalling = false;
+    currentlyCalling = false;
     dequeue();
 }
 
@@ -38,6 +36,11 @@ function prepareMedia(mediaId)
 function playMedia(mediaId)
 {
     enqueue("aris://media/play/" + mediaId);
+}
+
+function playMediaAndVibrate(mediaId)
+{
+    enqueue("aris://media/playAndVibrate/" + mediaId);
 }
 
 function stopMedia(mediaId)
