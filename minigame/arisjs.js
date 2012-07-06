@@ -137,12 +137,10 @@ function takeItemFromPlayer(gameId, playerId, itemId, qtyToTake) {
 
 
 function updateWebHook(gameId, webHookId, name, url) {
-    
     var webHookObj = new Object();
     webHookObj.intGameID = gameId;
     webHookObj.intWebHookID = webHookId;
     webHookObj.strName = name;
     webHookObj.strURL = url;
     sendRequest("webhooks.updateWebHook", JSON.stringify(webHookObj));
-    
 }
