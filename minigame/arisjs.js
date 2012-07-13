@@ -1,27 +1,25 @@
 var requestsQueue = new Array();
-var isCurrentlyCalling = false;
+var currentlyCalling = false;
 
 function enqueue(nextRequest)
 {
     requestsQueue.push(nextRequest);
-    if(!isCurrentlyCalling) dequeue(); //comment
+    if(!currentlyCalling) dequeue();
 }
 
 function dequeue()
 {
-    if(requestsQueue.length()) window.location = requestsQueue.shift();
+    if(requestsQueue.length) window.location = requestsQueue.shift();
 }
 
 function isCurrentlyCalling()
 {
-    alert("Is Calling");
-    isCurrentlyCalling = true;
+    currentlyCalling = true;
 }
 
 function isNotCurrentlyCalling()
 {
-    alert("Is Not Calling");
-    isCurrentlyCalling = false;
+    currentlyCalling = false;
     dequeue();
 }
 
@@ -38,6 +36,11 @@ function prepareMedia(mediaId)
 function playMedia(mediaId)
 {
     enqueue("aris://media/play/" + mediaId);
+}
+
+function playMediaAndVibrate(mediaId)
+{
+    enqueue("aris://media/playAndVibrate/" + mediaId);
 }
 
 function stopMedia(mediaId)
@@ -75,23 +78,17 @@ function sendRequest(fn, params, calledByFunction)
 {
     var xmlhttp;
     xmlhttp=new XMLHttpRequest();
-    xmlhttp.open("POST","http://dev.arisgames.org/server/json.php/v1."+fn,false); 
+    xmlhttp.open("POST","http://arisgames.org/server/json.php/v1."+fn,false); 
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(params); //Synchronous call
     
     var response=JSON.parse(xmlhttp.responseText);
-    //alert(xmlhttp.responseText);
+    //alert("called "+fn+", with "+params+", got "+xmlhttp.responseText);
     if(response.returnCode != 0) //Error
-    {
         alert(xmlhttp.responseText);
-    }
     else
-    {
-        
         return response.data;   
-    }
 }
-
 
 function getItemCountForPlayer(gameId, playerId, itemId) {
     var itemCount = 0;
@@ -100,10 +97,8 @@ function getItemCountForPlayer(gameId, playerId, itemId) {
     inventoryObj.playerId = playerId;
     inventoryObj.itemId = itemId;
     itemCount = sendRequest("items.getItemCountForPlayer", JSON.stringify(inventoryObj));
-    
     return itemCount;
 }
-
 
 function setItemCountForPlayer(gameId, playerId, itemId, itemCount) {
     var inventoryObj = new Object();
@@ -112,8 +107,6 @@ function setItemCountForPlayer(gameId, playerId, itemId, itemCount) {
     inventoryObj.itemId = itemId;
     inventoryObj.qty = itemCount;
     sendRequest("players.setItemCountForPlayer", JSON.stringify(inventoryObj));
-    
-    
 }
 
 
@@ -137,10 +130,12 @@ function takeItemFromPlayer(gameId, playerId, itemId, qtyToTake) {
 
 
 function updateWebHook(gameId, webHookId, name, url) {
+    
     var webHookObj = new Object();
     webHookObj.intGameID = gameId;
     webHookObj.intWebHookID = webHookId;
     webHookObj.strName = name;
     webHookObj.strURL = url;
     sendRequest("webhooks.updateWebHook", JSON.stringify(webHookObj));
+    
 }
