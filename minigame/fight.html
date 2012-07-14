@@ -65,7 +65,7 @@ var kMediaIdPunch = 29354;
 var kMediaIdFire = 29323;
 var kMediaIdKiss = 29356;
 var kMediaIdWin = 29360;
-var kMediaIdLoose = 29358;
+var kMediaIdLose = 29358;
 
 //Variables
 var kHealth;
@@ -89,19 +89,32 @@ function initialize()
     var params = parseURLParams(document.URL);
     gameId = parseInt(params.gameId);
     playerId = parseInt(params.playerId);
+    webPageId = parseInt(params.webPageId);
 
     //Get Stuff from Server
-    kType = kTypeAji;
+    switch(webPageId)
+    {
+        case 716:
+            kType = kTypeAji;
+            break;
+        case 674:
+            kType = kTypMusawa;
+            break;
+        case 718:
+            kType = kTypeOrbital;
+            break;
+        case 717:
+            kType = kTypeYongyong;
+            break;
+        case 715:
+            kType = kTypePinkmoonaw;
+            break;
+    }
     kHealth = kMaxHealths[kType];
 
     pHealth = parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
-    //alert(pHealth);
-    //pHealth = 100;
-    pLevel = 1;
     pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
-    //alert(pXP);
-    //pXP = 100;
-
+    pLevel = pXP/10;
     pName = "Phildo";
 
     turnProgress = -1;
@@ -129,7 +142,7 @@ function initialize()
     prepareMedia(kMediaIdFire); 
     prepareMedia(kMediaIdKiss); 
     prepareMedia(kMediaIdWin); 
-    prepareMedia(kMediaIdLoose); 
+    prepareMedia(kMediaIdLose); 
 
     //Start Music
     playMedia(kMediaIdMusic);
@@ -252,8 +265,9 @@ function kill(fighter)
         pXP = pXP + 10; 
     }
     else {
-        playMedia(kMediaIdLoose);
+        playMedia(kMediaIdLose);
         setScene(sceneLose);
+        pHealth = 1;
     }
     // update health and xp in ARIS
     setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
@@ -268,6 +282,9 @@ function kill(fighter)
 <style>
 div
 {
+    /*border-style:solid;
+    border-width:1px;
+    border-color:#FF0000;*/
     padding:0px;
     color:white;
     font-family:Noteworthy;
@@ -282,6 +299,10 @@ user-select:none;
 
 .scene
 {
+  /* For some reason, this fixes the white bar at the top. */
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
   width:100%;
   height:100%;
   display:none;
@@ -289,7 +310,7 @@ user-select:none;
 
 .HUD
 {
-  margin:0px, 10px, 10px, 10px;
+  margin:10px;
   width:300px;
   height:138px;
   position:relative;
@@ -414,10 +435,10 @@ user-select:none;
   </div>
 </div>
 
-<!-- Loose State -->    
+<!-- Lose State -->    
 <div id="lose" class="scene" style="background-color:#000000;">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
-      YOU LOOSE
+      YOU LOSE
   </div>
 </div>
 
