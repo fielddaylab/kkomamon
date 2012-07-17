@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta name = "viewport" content = "width = device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name = "viewport" content = "width=device-width, user-scalable=no" />
 <title>Kkomamon Fight</title>
 <script type = "text/javascript" src = "arisjs.js"></script>
-    
+
 <script type = "text/javascript">
 document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
 
 function loadMe()
 {
     setScene(sceneFight);
-    initialize();
+    setTimeout(function(){initialize()},100);
 }
 
 function setScene(scene)
@@ -54,6 +54,8 @@ var kTypePinkmoonaw = 4;
 var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
 var kMaxHealths = new Array(100,120,130,140,200);
 var kAttacks = new Array(5,10,15,20,50);
+var kWebIds = new Array(716,674,718,717,715);
+var kKillIds = new Array(3,14,15,16,17);
 var pPunch = new Array(30,10,10,10,10);
 var pFire = new Array(10,30,20,20,20);
 var pKiss = new Array(40,40,40,40,40);
@@ -84,7 +86,6 @@ var XP_ITEM_ID = 7;
 
 function initialize()
 {
-
     //Get PlayerID and GameID from URL
     var params = parseURLParams(document.URL);
     gameId = parseInt(params.gameId);
@@ -94,34 +95,37 @@ function initialize()
     //Get Stuff from Server
     switch(webPageId)
     {
-        case 716:
+        case kWebIds[0]:
             kType = kTypeAji;
             break;
-        case 674:
+        case kWebIds[1]:
             kType = kTypMusawa;
             break;
-        case 718:
+        case kWebIds[2]:
             kType = kTypeOrbital;
             break;
-        case 717:
+        case kWebIds[3]:
             kType = kTypeYongyong;
             break;
-        case 715:
+        case kWebIds[4]:
             kType = kTypePinkmoonaw;
             break;
     }
     kHealth = kMaxHealths[kType];
 
-    pHealth = parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
-    pXP = getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
+    pName = "You";
+    getPlayerName();
+    pHealth = 100;//parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
+    getItemCount(HEALTH_ITEM_ID);
+    pXP = 1;//getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
+    getItemCount(XP_ITEM_ID);
     pLevel = pXP/10;
-    pName = "Phildo";
 
     turnProgress = -1;
     //End Server Get
 
-    displayHealth(0); 
-    displayHealth(1); 
+    displayHealth(p); 
+    displayHealth(k); 
 
     //Set up the images
     document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".gif')";
@@ -147,14 +151,36 @@ function initialize()
     //Start Music
     playMedia(kMediaIdMusic);
 }
-    
-    function pause(millis) 
+
+function didUpdateItemQty(itemId,qty)
+{
+    //alert("Received Item Update:"+itemId+", qty:"+qty);
+    switch(itemId)
     {
-        var date = new Date();
-        var curDate = null;
-        do { curDate = new Date(); } 
-        while(curDate-date < millis)
+        case HEALTH_ITEM_ID:
+            pHealth = qty;
+            displayHealth(p);
+            break;
+        case XP_ITEM_ID:
+            pXP = qty;
+            pLevel = pXP/10;
+            break;
     }
+}
+
+function setPlayerName(name)
+{
+    pName = name;
+    displayHealth(p);
+}
+
+function pause(millis) 
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); } 
+    while(curDate-date < millis)
+}
 
 function displayHealth(fighter)
 {
@@ -242,16 +268,16 @@ function action(attack, state)
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
+
+        // update health and xp in ARIS
+        setItemCount(HEALTH_ITEM_ID, pHealth); //setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
+        setItemCount(XP_ITEM_ID, pXP); //setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
     }
 
     if(state == 2)
     {
         turnProgress = -1;
     }
-
-    // update health and xp in ARIS
-    setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
-    setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
 
 }
 
@@ -270,8 +296,8 @@ function kill(fighter)
         pHealth = 1;
     }
     // update health and xp in ARIS
-    setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
-    setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
+    setItemCount(HEALTH_ITEM_ID, pHealth); //setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
+    setItemCount(XP_ITEM_ID, pXP); //setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
 
 }
 

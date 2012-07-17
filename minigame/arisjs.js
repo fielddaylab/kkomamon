@@ -1,56 +1,93 @@
 var requestsQueue = new Array();
 var currentlyCalling = false;
 
-function enqueue(nextRequest)
+function enqueueRequest(nextRequest)
 {
+    //alert("Enqueued: "+nextRequest);
     requestsQueue.push(nextRequest);
-    if(!currentlyCalling) dequeue();
-}
-
-function dequeue()
-{
-    if(requestsQueue.length) window.location = requestsQueue.shift();
+    if(!currentlyCalling) 
+    {
+        currentlyCalling = true;
+        dequeueRequest();
+    }
 }
 
 function isCurrentlyCalling()
 {
+    //alert("currentlyCalling()");
     currentlyCalling = true;
+}
+
+function dequeueRequest()
+{
+    if(requestsQueue.length) 
+    {
+        var req = requestsQueue.shift();
+        //alert("Dequeued: "+req);
+        window.location = req;
+    }
 }
 
 function isNotCurrentlyCalling()
 {
+    //alert("isNotCurrentlyCalling()");
     currentlyCalling = false;
-    dequeue();
+    dequeueRequest();
 }
 
 function closeMe()
 {
-    enqueue("aris://closeMe");
+    enqueueRequest("aris://closeMe");
 }
 
 function prepareMedia(mediaId)
 {
-    enqueue("aris://media/prepare/" + mediaId);
+    enqueueRequest("aris://media/prepare/" + mediaId);
 }
 
 function playMedia(mediaId)
 {
-    enqueue("aris://media/play/" + mediaId);
+    enqueueRequest("aris://media/play/" + mediaId);
 }
 
 function playMediaAndVibrate(mediaId)
 {
-    enqueue("aris://media/playAndVibrate/" + mediaId);
+    enqueueRequest("aris://media/playAndVibrate/" + mediaId);
 }
 
 function stopMedia(mediaId)
 {
-    enqueue("aris://media/stop/" + mediaId);
+    enqueueRequest("aris://media/stop/" + mediaId);
 }
 
 function setMediaVolume(mediaId, volume)
 {
-    enqueue("aris://media/setVolume/" + mediaId + "/" + volume);
+    enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume);
+}
+
+function getItemCount(itemId)
+{
+    enqueueRequest("aris://inventory/get/" + itemId);
+}
+
+function setItemCount(itemId,qty)
+{
+    enqueueRequest("aris://inventory/set/" + itemId + "/" + qty);
+}
+
+function giveItemCount(itemId,qty)
+{
+    enqueueRequest("aris://inventory/give/" + itemId + "/" + qty);
+}
+
+function takeItemCount(itemId,qty)
+{
+    enqueueRequest("aris://inventory/take/" + itemId + "/" + qty);
+}
+
+function getPlayerName()
+{
+    enqueueRequest("aris://player/name");
 }
 
 function parseURLParams(url) {
@@ -109,7 +146,6 @@ function setItemCountForPlayer(gameId, playerId, itemId, itemCount) {
     sendRequest("players.setItemCountForPlayer", JSON.stringify(inventoryObj));
 }
 
-
 function giveItemToPlayer(gameId, playerId, itemId, qtyToGive) {
     var inventoryObj = new Object();
     inventoryObj.intGameId = gameId;
@@ -127,7 +163,6 @@ function takeItemFromPlayer(gameId, playerId, itemId, qtyToTake) {
     inventoryObj.qtyToGive = qtyToGive;
     sendRequest("players.takeItemFromPlayer", JSON.stringify(inventoryObj));
 }
-
 
 function updateWebHook(gameId, webHookId, name, url) {
     
