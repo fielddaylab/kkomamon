@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Phil Loves You <3 -->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -31,6 +32,7 @@ function setScene(scene)
             document.getElementById("fight").style.display="block";
             break;
         case sceneWin:
+            document.getElementById("catch").src="images/"+kNames[kType]+".gif";
             document.getElementById("win").style.display="block";
             break;
         case sceneLose:
@@ -519,28 +521,32 @@ user-select:none;
 </div>
 
 <!-- Win State -->
-<div id="win" class="scene">
-  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+<div id="win" class="scene" style="position:absolute;" onClick="closeMe()">
+  <img width="100%" style="position:absolute; top:50px; left:0px;" src="images/hand.png" />
+  <img id="catch" width="50%" style="position:absolute; top:40px; left:70px;" src="" />
+  <div style="color:#FFFFFF; position:absolute; bottom:20px; left:115px;">
       YOU WIN
   </div>
 </div>
 
 <!-- Lose State -->    
-<div id="lose" class="scene">
+<div id="lose" class="scene" onClick="closeMe()">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
       YOU LOSE
   </div>
 </div>
 
 <!-- Fire Bonus -->
-<div id="firebonus" class="bonus">
+<div id="firebonus" class="bonus" onClick="closeMe()"
+  <img style="position:absolute;" src="images/fireButton.png" />
   <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
       <b>You have captured enough Aji to unlock their devastating fireball!</b><br /><br />It won't work well on other Aji, but other Kkomamon might be more susceptible to its power...
   </div>
 </div>
 
 <!-- Awesome Bonus -->
-<div id="awesomebonus" class="bonus">
+<div id="awesomebonus" class="bonus" onClick="closeMe()"
+  <img style="position:absolute; bottom:-20px;" src="images/player.png" />
   <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
     <b>You are AWESOME!</b><br /><br />Prepare to fight the elusive Orbital, and the leviathan YongYong! You must be quick, and strong!
   <div>
