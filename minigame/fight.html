@@ -5,12 +5,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name = "viewport" content = "width=device-width, user-scalable=no" />
 <title>Kkomamon Fight</title>
-<script type = "text/javascript" src = "arisjs.js"></script>
 
 <script type = "text/javascript">
 document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
 
-function loadMe()
+var ARIS = {};
+ARIS.ready = function()
 {
     setScene(sceneFight);
     setTimeout(function(){initialize()},100);
@@ -77,6 +77,7 @@ var kTypeYongyong = 3;
 var kTypePinkmoonaw = 4;
 
 var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
+var kNamesCap = new Array("Aji","Musawa","Orbital","Yongyong","Pinkmoonaw");
 var kMaxHealths = new Array(100,120,130,400,500);
 var kAttacks = new Array(5,10,15,20,50);
 var kWebIds = new Array(584,578,590,587,581);
@@ -93,6 +94,40 @@ var kMediaIdFire = 19358;
 var kMediaIdKiss = 19367;
 var kMediaIdWin = 19373;
 var kMediaIdLose = 19370;
+
+var playMedia = function(media_id){
+  var url;
+  switch(media_id) {
+    case kMediaIdMusic:
+      url = 'http://arisgames.org/server/gamedatav2/2045/aris8757d3ef0a587fc754cf2aa0ba044686.m4a';
+      break;
+    case kMediaIdMiss:
+      url = 'http://arisgames.org/server/gamedatav2/2045/aris7c5b76f91047c9f82e1c94924aeede28.mp3';
+      break;
+    case kMediaIdPunch:
+      url = 'http://arisgames.org/server/gamedatav2/2045/aris931782fa1a2ac3177213f8efd7c99b81.caf';
+      break;
+    case kMediaIdFire:
+      url = 'http://arisgames.org/server/gamedatav2/2045/aris6ca088fbd48bb6d0006d9ee36938f8de.caf';
+      break;
+    case kMediaIdKiss:
+      url = 'http://arisgames.org/server/gamedatav2/2045/aris4ea27c5ac11058fc4e8fba01694a9af9.caf';
+      break;
+    case kMediaIdWin:
+      url = 'http://arisgames.org/server/gamedatav2/2045/aris43812c99fa28e3a7c0386f700c632647.caf';
+      break;
+    case kMediaIdLose:
+      url = 'http://arisgames.org/server/gamedatav2/2045/arisa9bfbf12d552ccc36d9574b56e758818.caf';
+      break;
+  }
+  var audio = new Audio(url);
+  audio.play();
+}
+
+var playMediaAndVibrate = function(media_id){
+  playMedia(media_id);
+  ARIS.vibrate();
+}
 
 //Variables
 var kHealth;
@@ -114,7 +149,27 @@ var KISS_ABILITY_ID = 4307;
 function initialize()
 {
     //Get PlayerID and GameID from URL
-    var params = ARIS.parseURLParams(document.URL);
+    var parseURLParams = function(url) 
+    {
+        var queryStart = url.indexOf("?") + 1;
+        var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
+        var query      = url.slice(queryStart, queryEnd - 1);
+
+        var params  = {};
+        if (query === url || query === "") return params;
+        var nvPairs = query.replace(/\+/g, " ").split("&");
+
+        for(var i=0; i<nvPairs.length; i++)
+        {
+            var nv = nvPairs[i].split("=");
+            var n  = decodeURIComponent(nv[0]);
+            var v  = decodeURIComponent(nv[1]);
+            if(!(n in params)) params[n] = [];
+            params[n].push(nv.length === 2 ? v : null);
+        }
+        return params;
+    }
+    var params = parseURLParams(document.URL);
     gameId = parseInt(params.game_id);
     playerId = parseInt(params.player_id);
     webPageId = parseInt(params.web_page_id);
@@ -140,15 +195,14 @@ function initialize()
     }
     kHealth = kMaxHealths[kType];
 
-    pName = "You";
-    ARIS.getPlayerName();
+    pName = ARIS.cache.player.display_name || ARIS.cache.player.user_name;
     pHealth = 0;
-    ARIS.getItemCount(HEALTH_ITEM_ID);
+    ARIS.getPlayerItemCount(HEALTH_ITEM_ID);
     pXP = 0;
-    ARIS.getItemCount(XP_ITEM_ID);
+    ARIS.getPlayerItemCount(XP_ITEM_ID);
     pLevel = 0;
-    ARIS.getItemCount(FIRE_ABILITY_ID);
-    ARIS.getItemCount(KISS_ABILITY_ID);
+    ARIS.getPlayerItemCount(FIRE_ABILITY_ID);
+    ARIS.getPlayerItemCount(KISS_ABILITY_ID);
 
     turnProgress = -1;
     //End Server Get
@@ -176,7 +230,7 @@ function initialize()
     ARIS.prepareMedia(kMediaIdLose); 
 
     //Start Music
-    ARIS.playMedia(kMediaIdMusic);
+    playMedia(kMediaIdMusic);
 }
 
 ARIS.didUpdateItemQty = function(itemId,qty)
@@ -208,12 +262,6 @@ ARIS.didUpdateItemQty = function(itemId,qty)
     }
 }
 
-function setPlayerName(name)
-{
-    pName = name;
-    displayHealth(p);
-}
-
 function pause(millis) 
 {
     var date = new Date();
@@ -227,7 +275,7 @@ function displayHealth(fighter)
     if(fighter == k)
     {
         document.getElementById("khealth").style.width = ((kHealth/kMaxHealths[kType])*146)+"px";
-        document.getElementById("kname").innerHTML = kNames[kType]+" ("+kHealth+"/"+kMaxHealths[kType]+")";
+        document.getElementById("kname").innerHTML = kNamesCap[kType]+" ("+kHealth+"/"+kMaxHealths[kType]+")";
     }
     else
     {
@@ -258,16 +306,16 @@ function action(attack, state)
 
             if(attack == 0){
                 kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
-                ARIS.playMedia(kMediaIdPunch); 
+                playMedia(kMediaIdPunch); 
             }
             if(attack == 1) {
                 kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
-                ARIS.playMedia(kMediaIdFire);
+                playMedia(kMediaIdFire);
             }
 
             if(attack == 2) {
                 kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
-                ARIS.playMedia(kMediaIdKiss); 
+                playMedia(kMediaIdKiss); 
             }
             kHealth = Math.round(kHealth);
 
@@ -279,7 +327,7 @@ function action(attack, state)
         {
             //Miss
             document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
-            ARIS.playMedia(kMediaIdMiss); 
+            playMedia(kMediaIdMiss); 
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
@@ -292,7 +340,7 @@ function action(attack, state)
         {
             //Hit
             document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
-            ARIS.playMediaAndVibrate(kMediaIdPunch); 
+            playMediaAndVibrate(kMediaIdPunch); 
             pHealth-=kAttacks[kType];
             pHealth = Math.round(pHealth);
 
@@ -304,7 +352,7 @@ function action(attack, state)
         {
             //Miss
             document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
-            ARIS.playMedia(kMediaIdMiss); 
+            playMedia(kMediaIdMiss); 
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
@@ -327,14 +375,14 @@ function kill(fighter)
 
     if(fighter == k) 
     {
-        ARIS.playMedia(kMediaIdWin);
+        playMedia(kMediaIdWin);
         setScene(sceneWin);
         pXP = pXP + 30; 
         ARIS.giveItemCount(kKillIds[kType],1);
     }
     else 
     {
-        ARIS.playMedia(kMediaIdLose);
+        playMedia(kMediaIdLose);
         setScene(sceneLose);
         pXP = pXP + 10; 
         pHealth = 1;
