@@ -80,7 +80,7 @@ var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
 var kMaxHealths = new Array(100,120,130,400,500);
 var kAttacks = new Array(5,10,15,20,50);
 var kWebIds = new Array(716,674,718,717,715);
-var kKillIds = new Array(3,14,15,16,17);
+var kKillIds = new Array(8674,8679,8680,8681,8682);
 var pPunch = new Array(30,10,10,10,10);
 var pFire = new Array(10,30,20,20,20);
 var pKiss = new Array(40,40,40,40,40);
@@ -106,15 +106,15 @@ var pName;
 var turnProgress;
 
 //Constants
-var HEALTH_ITEM_ID = 6;
-var XP_ITEM_ID = 7;  
-var FIRE_ABILITY_ID = 11;
-var KISS_ABILITY_ID = 12;
+var HEALTH_ITEM_ID = 8675;
+var XP_ITEM_ID = 8676;  
+var FIRE_ABILITY_ID = 8677;
+var KISS_ABILITY_ID = 8678;
 
 function initialize()
 {
     //Get PlayerID and GameID from URL
-    var params = parseURLParams(document.URL);
+    var params = ARIS.parseURLParams(document.URL);
     gameId = parseInt(params.gameId);
     playerId = parseInt(params.playerId);
     webPageId = parseInt(params.webPageId);
@@ -141,14 +141,14 @@ function initialize()
     kHealth = kMaxHealths[kType];
 
     pName = "You";
-    getPlayerName();
-    pHealth = 0;//parseInt(getItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID));
-    getItemCount(HEALTH_ITEM_ID);
-    pXP = 0;//getItemCountForPlayer(gameId, playerId, XP_ITEM_ID);
-    getItemCount(XP_ITEM_ID);
+    ARIS.getPlayerName();
+    pHealth = 0;
+    ARIS.getItemCount(HEALTH_ITEM_ID);
+    pXP = 0;
+    ARIS.getItemCount(XP_ITEM_ID);
     pLevel = 0;
-    getItemCount(FIRE_ABILITY_ID);
-    getItemCount(KISS_ABILITY_ID);
+    ARIS.getItemCount(FIRE_ABILITY_ID);
+    ARIS.getItemCount(KISS_ABILITY_ID);
 
     turnProgress = -1;
     //End Server Get
@@ -162,26 +162,24 @@ function initialize()
     document.getElementById("firebuttonimage").src = "images/lockedButton.png";
     document.getElementById("kissbuttonimage").src = "images/lockedButton.png";
     document.getElementById("punchbuttonimage").src = "images/punchButton.png";
-    if(pLevel > 0)
-        document.getElementById("firebuttonimage").src = "images/fireButton.png";
-    if(pLevel > 1)
-        document.getElementById("kissbuttonimage").src = "images/kissButton.png";
+    if(pLevel > 0) document.getElementById("firebuttonimage").src = "images/fireButton.png";
+    if(pLevel > 1) document.getElementById("kissbuttonimage").src = "images/kissButton.png";
 
     //Begin Precaching Media
-    //prepareMedia(kMediaIdMusic);
-    setMediaVolume(kMediaIdMusic,0.20);
-    //prepareMedia(kMediaIdMiss); 
-    //prepareMedia(kMediaIdPunch); 
-    //prepareMedia(kMediaIdFire); 
-    //prepareMedia(kMediaIdKiss); 
-    //prepareMedia(kMediaIdWin); 
-    //prepareMedia(kMediaIdLose); 
+    ARIS.setMediaVolume(kMediaIdMusic,0.20);
+    ARIS.prepareMedia(kMediaIdMusic);
+    ARIS.prepareMedia(kMediaIdMiss); 
+    ARIS.prepareMedia(kMediaIdPunch); 
+    ARIS.prepareMedia(kMediaIdFire); 
+    ARIS.prepareMedia(kMediaIdKiss); 
+    ARIS.prepareMedia(kMediaIdWin); 
+    ARIS.prepareMedia(kMediaIdLose); 
 
     //Start Music
-    playMedia(kMediaIdMusic);
+    ARIS.playMedia(kMediaIdMusic);
 }
 
-function didUpdateItemQty(itemId,qty)
+ARIS.didUpdateItemQty = function(itemId,qty)
 {
     //alert("Received Item Update:"+itemId+", qty:"+qty);
     switch(itemId)
@@ -260,16 +258,16 @@ function action(attack, state)
 
             if(attack == 0){
                 kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
-                playMedia(kMediaIdPunch); 
+                ARIS.playMedia(kMediaIdPunch); 
             }
             if(attack == 1) {
                 kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
-                playMedia(kMediaIdFire);
+                ARIS.playMedia(kMediaIdFire);
             }
 
             if(attack == 2) {
                 kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
-                playMedia(kMediaIdKiss); 
+                ARIS.playMedia(kMediaIdKiss); 
             }
             kHealth = Math.round(kHealth);
 
@@ -281,7 +279,7 @@ function action(attack, state)
         {
             //Miss
             document.getElementById("kalert").style.backgroundImage = "url('images/miss.png')";
-            playMedia(kMediaIdMiss); 
+            ARIS.playMedia(kMediaIdMiss); 
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
@@ -294,7 +292,7 @@ function action(attack, state)
         {
             //Hit
             document.getElementById("palert").style.backgroundImage = "url('images/hit.png')";
-            playMediaAndVibrate(kMediaIdPunch); 
+            ARIS.playMediaAndVibrate(kMediaIdPunch); 
             pHealth-=kAttacks[kType];
             pHealth = Math.round(pHealth);
 
@@ -306,14 +304,14 @@ function action(attack, state)
         {
             //Miss
             document.getElementById("palert").style.backgroundImage = "url('images/miss.png')";
-            playMedia(kMediaIdMiss); 
+            ARIS.playMedia(kMediaIdMiss); 
 
         }
         setTimeout(function(){action(attack, state+1)}, delay);
 
         // update health and xp in ARIS
-        setItemCount(HEALTH_ITEM_ID, pHealth); //setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
-        setItemCount(XP_ITEM_ID, pXP); //setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
+        ARIS.setItemCount(HEALTH_ITEM_ID, pHealth);
+        ARIS.setItemCount(XP_ITEM_ID, pXP);
     }
 
     if(state == 2)
@@ -325,18 +323,18 @@ function action(attack, state)
 
 function kill(fighter)
 {   
-    setMediaVolume(kMediaIdMusic,0.0);
+    ARIS.setMediaVolume(kMediaIdMusic,0.0);
 
     if(fighter == k) 
     {
-        playMedia(kMediaIdWin);
+        ARIS.playMedia(kMediaIdWin);
         setScene(sceneWin);
         pXP = pXP + 30; 
-        giveItemCount(kKillIds[kType],1);
+        ARIS.giveItemCount(kKillIds[kType],1);
     }
     else 
     {
-        playMedia(kMediaIdLose);
+        ARIS.playMedia(kMediaIdLose);
         setScene(sceneLose);
         pXP = pXP + 10; 
         pHealth = 1;
@@ -344,7 +342,7 @@ function kill(fighter)
 
     if(pXP > 100 && pLevel < 1)
     {
-        setItemCount(FIRE_ABILITY_ID,1);
+        ARIS.setItemCount(FIRE_ABILITY_ID,1);
         setTimeout(function(){displayBonus(bonusFire)},1000);
     }
     if(pXP >= 250 && pXP < 280)
@@ -353,8 +351,8 @@ function kill(fighter)
     }
 
     // update health and xp in ARIS
-    setItemCount(HEALTH_ITEM_ID, pHealth); //setItemCountForPlayer(gameId, playerId, HEALTH_ITEM_ID, pHealth);
-    setItemCount(XP_ITEM_ID, pXP); //setItemCountForPlayer(gameId, playerId, XP_ITEM_ID, pXP);
+    ARIS.setItemCount(HEALTH_ITEM_ID, pHealth);
+    ARIS.setItemCount(XP_ITEM_ID, pXP);
 
 }
 
@@ -521,7 +519,7 @@ user-select:none;
 </div>
 
 <!-- Win State -->
-<div id="win" class="scene" style="position:absolute;" onClick="closeMe()">
+<div id="win" class="scene" style="position:absolute;" onClick="ARIS.closeMe()">
   <img width="100%" style="position:absolute; top:50px; left:0px;" src="images/hand.png" />
   <img id="catch" width="50%" style="position:absolute; top:40px; left:70px;" src="" />
   <div style="color:#FFFFFF; position:absolute; bottom:20px; left:115px;">
@@ -530,14 +528,14 @@ user-select:none;
 </div>
 
 <!-- Lose State -->    
-<div id="lose" class="scene" onClick="closeMe()">
+<div id="lose" class="scene" onClick="ARIS.closeMe()">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
       YOU LOSE
   </div>
 </div>
 
 <!-- Fire Bonus -->
-<div id="firebonus" class="bonus" onClick="closeMe()"
+<div id="firebonus" class="bonus" onClick="ARIS.closeMe()"
   <img style="position:absolute;" src="images/fireButton.png" />
   <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
       <b>You have captured enough Aji to unlock their devastating fireball!</b><br /><br />It won't work well on other Aji, but other Kkomamon might be more susceptible to its power...
@@ -545,7 +543,7 @@ user-select:none;
 </div>
 
 <!-- Awesome Bonus -->
-<div id="awesomebonus" class="bonus" onClick="closeMe()"
+<div id="awesomebonus" class="bonus" onClick="ARIS.closeMe()"
   <img style="position:absolute; bottom:-20px;" src="images/player.png" />
   <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
     <b>You are AWESOME!</b><br /><br />Prepare to fight the elusive Orbital, and the leviathan YongYong! You must be quick, and strong!

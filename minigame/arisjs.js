@@ -1,176 +1,162 @@
-var requestsQueue = new Array();
-var currentlyCalling = false;
-
-function enqueueRequest(nextRequest)
+var ARISJS = function(_ARIS)
 {
-    //alert("Enqueued: "+nextRequest);
-    requestsQueue.push(nextRequest);
-    if(!currentlyCalling) 
+    _ARIS.requestsQueue = new Array();
+    _ARIS.currentlyCalling = false;
+
+    _ARIS.enqueueRequest = function(nextRequest)
     {
-        currentlyCalling = true;
-        dequeueRequest();
-    }
-}
-
-function isCurrentlyCalling()
-{
-    //alert("currentlyCalling()");
-    currentlyCalling = true;
-}
-
-function dequeueRequest()
-{
-    if(requestsQueue.length) 
-    {
-        var req = requestsQueue.shift();
-        //alert("Dequeued: "+req);
-        window.location = req;
-    }
-}
-
-function isNotCurrentlyCalling()
-{
-    //alert("isNotCurrentlyCalling()");
-    currentlyCalling = false;
-    dequeueRequest();
-}
-
-function closeMe()
-{
-    enqueueRequest("aris://closeMe");
-}
-
-function prepareMedia(mediaId)
-{
-    enqueueRequest("aris://media/prepare/" + mediaId);
-}
-
-function playMedia(mediaId)
-{
-    enqueueRequest("aris://media/play/" + mediaId);
-}
-
-function playMediaAndVibrate(mediaId)
-{
-    enqueueRequest("aris://media/playAndVibrate/" + mediaId);
-}
-
-function stopMedia(mediaId)
-{
-    enqueueRequest("aris://media/stop/" + mediaId);
-}
-
-function setMediaVolume(mediaId, volume)
-{
-    enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume);
-}
-
-function getItemCount(itemId)
-{
-    enqueueRequest("aris://inventory/get/" + itemId);
-}
-
-function setItemCount(itemId,qty)
-{
-    enqueueRequest("aris://inventory/set/" + itemId + "/" + qty);
-}
-
-function giveItemCount(itemId,qty)
-{
-    enqueueRequest("aris://inventory/give/" + itemId + "/" + qty);
-}
-
-function takeItemCount(itemId,qty)
-{
-    enqueueRequest("aris://inventory/take/" + itemId + "/" + qty);
-}
-
-function getPlayerName()
-{
-    enqueueRequest("aris://player/name");
-}
-
-function parseURLParams(url) {
-    var queryStart = url.indexOf("?") + 1;
-    var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
-    var query      = url.slice(queryStart, queryEnd - 1);
-    
-    var params  = {};
-    if (query === url || query === "") return params;
-    var nvPairs = query.replace(/\+/g, " ").split("&");
-    
-    for (var i=0; i<nvPairs.length; i++) {
-        var nv = nvPairs[i].split("=");
-        var n  = decodeURIComponent(nv[0]);
-        var v  = decodeURIComponent(nv[1]);
-        if ( !(n in params) ) {
-            params[n] = [];
+        _ARIS.requestsQueue.push(nextRequest);
+        if(!_ARIS.currentlyCalling) 
+        {
+            _ARIS.currentlyCalling = true;
+            _ARIS.dequeueRequest();
         }
-        params[n].push(nv.length === 2 ? v : null);
     }
-    return params;
-}
 
-function sendRequest(fn, params, calledByFunction)
-{
-    var xmlhttp;
-    xmlhttp=new XMLHttpRequest();
-    xmlhttp.open("POST","http://arisgames.org/server/json.php/v1."+fn,false); 
-    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.send(params); //Synchronous call
+    _ARIS.isCurrentlyCalling = function()
+    {
+        _ARIS.currentlyCalling = true;
+    }
+
+    _ARIS.dequeueRequest = function()
+    {
+        if(_ARIS.requestsQueue.length) 
+        {
+            var req = _ARIS.requestsQueue.shift();
+            window.location = req;
+
+            /* DEBUG - uncomment to use in browser without error */
+            /*
+            _ARIS.isCurrentlyCalling();
+            if(req == "aris://inventory/get/" + 99999999)
+                _ARIS.didUpdateItemQty(99999999,1);
+            _ARIS.isNotCurrentlyCalling();
+            //*/
+        }
+    }
+
+    _ARIS.isNotCurrentlyCalling = function()
+    {
+        _ARIS.currentlyCalling = false;
+        _ARIS.dequeueRequest();
+    }
+
+    _ARIS.closeMe             = function()                { _ARIS.enqueueRequest("aris://closeMe"); }
+    _ARIS.exitToTab           = function(tab)             { _ARIS.enqueueRequest("aris://exitTo/tab/"+tab); }
+    _ARIS.exitToScanner       = function(prompt)          { _ARIS.enqueueRequest("aris://exitTo/scanner/"+prompt); }
+    _ARIS.exitToPlaque        = function(plaqueId)        { _ARIS.enqueueRequest("aris://exitTo/plaque/"+plaqueId); }
+    _ARIS.exitToWebpage       = function(webpageId)       { _ARIS.enqueueRequest("aris://exitTo/webpage/"+webpageId); }
+    _ARIS.exitToItem          = function(itemId)          { _ARIS.enqueueRequest("aris://exitTo/item/"+itemId); }
+    _ARIS.exitToCharacter     = function(characterId)     { _ARIS.enqueueRequest("aris://exitTo/character/"+characterId); }
+    _ARIS.exitToPanoramic     = function(panoramicId)     { _ARIS.enqueueRequest("aris://exitTo/panoramic/"+panoramicId); }
+    _ARIS.prepareMedia        = function(mediaId)         { _ARIS.enqueueRequest("aris://media/prepare/" + mediaId); }
+    _ARIS.playMedia           = function(mediaId)         { _ARIS.enqueueRequest("aris://media/play/" + mediaId); }
+    _ARIS.playMediaAndVibrate = function(mediaId)         { _ARIS.enqueueRequest("aris://media/playAndVibrate/" + mediaId); }
+    _ARIS.stopMedia           = function(mediaId)         { _ARIS.enqueueRequest("aris://media/stop/" + mediaId); }
+    _ARIS.setMediaVolume      = function(mediaId, volume) { _ARIS.enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume); }
+    _ARIS.getItemCount        = function(itemId)          { _ARIS.enqueueRequest("aris://inventory/get/" + itemId); }
+    _ARIS.setItemCount        = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/set/" + itemId + "/" + qty); }
+    _ARIS.giveItemCount       = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/give/" + itemId + "/" + qty); }
+    _ARIS.takeItemCount       = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/take/" + itemId + "/" + qty); }
+    _ARIS.getPlayerName       = function()                { _ARIS.enqueueRequest("aris://player/name"); }
+    _ARIS.setBumpString       = function(bString)         { _ARIS.enqueueRequest("aris://bump/"+bString); }
+
+    //Call ARIS API directly (USE WITH CAUTION)
+    _ARIS.callService = function(serviceName, callback, GETparams, POSTparams)
+    {
+        var ROOT_URL = "http://arisgames.org"
+        var url;
+        if(GETparams) url = ROOT_URL+'/server/json.php/v1.'+serviceName+GETparams;
+        else          url = ROOT_URL+'/server/json.php/v1.'+serviceName;
     
-    var response=JSON.parse(xmlhttp.responseText);
-    //alert("called "+fn+", with "+params+", got "+xmlhttp.responseText);
-    if(response.returnCode != 0) //Error
-        alert(xmlhttp.responseText);
-    else
-        return response.data;   
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function()
+        {
+            if(request.readyState == 4)
+            {
+                if(request.status == 200)
+                    callback(request.responseText);
+                else
+                    callback(false);
+            }
+        };
+        if(POSTparams)
+        {
+            request.open('POST', url, true);
+            request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            request.send(POSTparams);
+            console.log("POSTparams:" + POSTparams);
+            console.log("url:" + url);
+        }
+        else
+        {
+            request.open('GET', url, true);
+            request.send();
+            console.log("GETurl:" + url);
+        }
+    }
+
+    //Not ARIS related... just kinda useful
+    _ARIS.parseURLParams = function(url) 
+    {
+        var queryStart = url.indexOf("?") + 1;
+        var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
+        var query      = url.slice(queryStart, queryEnd - 1);
+
+        var params  = {};
+        if (query === url || query === "") return params;
+        var nvPairs = query.replace(/\+/g, " ").split("&");
+
+        for(var i=0; i<nvPairs.length; i++)
+        {
+            var nv = nvPairs[i].split("=");
+            var n  = decodeURIComponent(nv[0]);
+            var v  = decodeURIComponent(nv[1]);
+            if(!(n in params)) params[n] = [];
+            params[n].push(nv.length === 2 ? v : null);
+        }
+        return params;
+    }
+
+    /*
+     * ARIS CALLBACK FUNCTIONS
+     */
+    if(!_ARIS.didUpdateItemQty)
+    {
+        _ARIS.didUpdateItemQty = function(updatedItemId,qty)
+        {
+            alert("Item '"+updatedItemId+"' qty was updated to '"+qty+"'. Override ARIS.didUpdateItemQty(updatedItemId,qty) to handle this event however you want! (Or, just add 'ARIS.didUpdateItemQty = function(updatedItemId,qty){return;};' to your code to just get rid of this message)");
+        }
+    }
+
+    if(!_ARIS.didReceiveName)
+    {
+        _ARIS.didReceiveName = function(name)
+        {
+            alert("The player's name is "+name+". Override ARIS.didReceiveName(name) to handle this event however you want! (Or, just add 'ARIS.didReceiveName = function(name){return;};' to your code to just get rid of this messagea)");
+        }
+    }
+
+    if(!_ARIS.bumpDetected)
+    {
+        _ARIS.bumpDetected = function(bumpString)
+        {
+            alert("Just detected a successful bump with this information: '"+bumpString+"'. Override ARIS.bumpReceived(bumpString) to handle this event however you want! (Or, just add 'ARIS.bumpReceived = function(bumpString){return;};' to your code to just get rid of this message)");
+        }
+    }
+
+    if(!_ARIS.hook)
+    {
+        _ARIS.hook = function(paramsJSON)
+        {
+            alert("Just recieved a hook from ARIS with this information: '"+paramsJSON+"'. Override ARIS.hook(paramsJSON) to handle this event however you want! (Or, just add 'ARIS.hook = function(paramsJSON){return;};' to your code to just get rid of this message)");
+        }
+    }
+
+    return _ARIS;
 }
 
-function getItemCountForPlayer(gameId, playerId, itemId) {
-    var itemCount = 0;
-    var inventoryObj = new Object();
-    inventoryObj.gameId = gameId;
-    inventoryObj.playerId = playerId;
-    inventoryObj.itemId = itemId;
-    itemCount = sendRequest("items.getItemCountForPlayer", JSON.stringify(inventoryObj));
-    return itemCount;
-}
+if(ARIS) ARISJS(ARIS);
+else var ARIS = ARISJS({});
 
-function setItemCountForPlayer(gameId, playerId, itemId, itemCount) {
-    var inventoryObj = new Object();
-    inventoryObj.gameId = gameId;
-    inventoryObj.playerId = playerId;
-    inventoryObj.itemId = itemId;
-    inventoryObj.qty = itemCount;
-    sendRequest("players.setItemCountForPlayer", JSON.stringify(inventoryObj));
-}
-
-function giveItemToPlayer(gameId, playerId, itemId, qtyToGive) {
-    var inventoryObj = new Object();
-    inventoryObj.intGameId = gameId;
-    inventoryObj.intItemID = itemId;
-    inventoryObj.intPlayerID = playerId;
-    inventoryObj.qtyToGive = qtyToGive;
-    sendRequest("players.giveItemToPlayer", JSON.stringify(inventoryObj));
-}
-
-function takeItemFromPlayer(gameId, playerId, itemId, qtyToTake) {
-    var inventoryObj = new Object();
-    inventoryObj.intGameId = gameId;
-    inventoryObj.intItemID = itemId;
-    inventoryObj.intPlayerID = playerId;
-    inventoryObj.qtyToGive = qtyToGive;
-    sendRequest("players.takeItemFromPlayer", JSON.stringify(inventoryObj));
-}
-
-function updateWebHook(gameId, webHookId, name, url) {
-    
-    var webHookObj = new Object();
-    webHookObj.intGameID = gameId;
-    webHookObj.intWebHookID = webHookId;
-    webHookObj.strName = name;
-    webHookObj.strURL = url;
-    sendRequest("webhooks.updateWebHook", JSON.stringify(webHookObj));
-    
-}
+if(ARISReady) ARISReady();
