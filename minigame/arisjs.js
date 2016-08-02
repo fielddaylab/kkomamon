@@ -37,57 +37,59 @@ function isNotCurrentlyCalling()
 
 function closeMe()
 {
-    enqueueRequest("aris://closeMe");
+    ARIS.exit();
 }
 
 function prepareMedia(mediaId)
 {
-    enqueueRequest("aris://media/prepare/" + mediaId);
+    ARIS.prepareMedia(mediaId);
 }
 
 function playMedia(mediaId)
 {
-    enqueueRequest("aris://media/play/" + mediaId);
+    ARIS.playMedia(mediaId);
 }
 
 function playMediaAndVibrate(mediaId)
 {
-    enqueueRequest("aris://media/playAndVibrate/" + mediaId);
+    ARIS.playMedia(mediaId);
+    ARIS.vibrate();
 }
 
 function stopMedia(mediaId)
 {
-    enqueueRequest("aris://media/stop/" + mediaId);
+    ARIS.stopMedia(mediaId);
 }
 
 function setMediaVolume(mediaId, volume)
 {
-    enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume);
+    ARIS.setMediaVolume(mediaId, volume);
 }
 
 function getItemCount(itemId)
 {
-    enqueueRequest("aris://inventory/get/" + itemId);
+    ARIS.getPlayerItemCount(itemId);
 }
 
 function setItemCount(itemId,qty)
 {
-    enqueueRequest("aris://inventory/set/" + itemId + "/" + qty);
+    ARIS.setPlayerItemCount(itemId,qty);
 }
 
 function giveItemCount(itemId,qty)
 {
-    enqueueRequest("aris://inventory/give/" + itemId + "/" + qty);
+    ARIS.givePlayerItemCount(itemId,qty);
 }
 
 function takeItemCount(itemId,qty)
 {
-    enqueueRequest("aris://inventory/take/" + itemId + "/" + qty);
+    ARIS.takePlayerItemCount(itemId,qty);
 }
 
 function getPlayerName()
 {
-    enqueueRequest("aris://player/name");
+    //TODO
+    //enqueueRequest("aris://player/name");
 }
 
 function parseURLParams(url) {

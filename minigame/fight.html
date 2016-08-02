@@ -10,7 +10,8 @@
 <script type = "text/javascript">
 document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
 
-function loadMe()
+var ARIS = {};
+ARIS.ready = function()
 {
     setScene(sceneFight);
     setTimeout(function(){initialize()},100);
@@ -79,20 +80,20 @@ var kTypePinkmoonaw = 4;
 var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
 var kMaxHealths = new Array(100,120,130,400,500);
 var kAttacks = new Array(5,10,15,20,50);
-var kWebIds = new Array(716,674,718,717,715);
+var kWebIds = new Array(584,578,590,587,581);
 var kKillIds = new Array(3,14,15,16,17);
 var pPunch = new Array(30,10,10,10,10);
 var pFire = new Array(10,30,20,20,20);
 var pKiss = new Array(40,40,40,40,40);
 
 //Audio Mapping
-var kMediaIdMusic = 30737;
-var kMediaIdMiss = 29345;
-var kMediaIdPunch = 30733;
-var kMediaIdFire = 30734;
-var kMediaIdKiss = 29356;
-var kMediaIdWin = 29360;
-var kMediaIdLose = 29358;
+var kMediaIdMusic = 19355;
+var kMediaIdMiss = 19361;
+var kMediaIdPunch = 19364;
+var kMediaIdFire = 19358;
+var kMediaIdKiss = 19367;
+var kMediaIdWin = 19373;
+var kMediaIdLose = 19370;
 
 //Variables
 var kHealth;
@@ -106,18 +107,18 @@ var pName;
 var turnProgress;
 
 //Constants
-var HEALTH_ITEM_ID = 6;
-var XP_ITEM_ID = 7;  
-var FIRE_ABILITY_ID = 11;
-var KISS_ABILITY_ID = 12;
+var HEALTH_ITEM_ID = 4298;
+var XP_ITEM_ID = 4301;
+var FIRE_ABILITY_ID = 4304;
+var KISS_ABILITY_ID = 4307;
 
 function initialize()
 {
     //Get PlayerID and GameID from URL
     var params = parseURLParams(document.URL);
-    gameId = parseInt(params.gameId);
-    playerId = parseInt(params.playerId);
-    webPageId = parseInt(params.webPageId);
+    gameId = parseInt(params.game_id);
+    playerId = parseInt(params.user_id);
+    webPageId = parseInt(params.web_page_id);
 
     //Get Stuff from Server
     switch(webPageId)
@@ -157,8 +158,8 @@ function initialize()
     displayHealth(k); 
 
     //Set up the images
-    document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".gif')";
-    document.getElementById("player").style.backgroundImage = "url('images/player.gif')";
+    document.getElementById("kkomamon").style.backgroundImage = "url('images/" + kNames[kType] + ".png')";
+    document.getElementById("player").style.backgroundImage = "url('images/player.png')";
     document.getElementById("firebuttonimage").src = "images/lockedButton.png";
     document.getElementById("kissbuttonimage").src = "images/lockedButton.png";
     document.getElementById("punchbuttonimage").src = "images/punchButton.png";
@@ -168,14 +169,14 @@ function initialize()
         document.getElementById("kissbuttonimage").src = "images/kissButton.png";
 
     //Begin Precaching Media
-    //prepareMedia(kMediaIdMusic);
+    prepareMedia(kMediaIdMusic);
     setMediaVolume(kMediaIdMusic,0.20);
-    //prepareMedia(kMediaIdMiss); 
-    //prepareMedia(kMediaIdPunch); 
-    //prepareMedia(kMediaIdFire); 
-    //prepareMedia(kMediaIdKiss); 
-    //prepareMedia(kMediaIdWin); 
-    //prepareMedia(kMediaIdLose); 
+    prepareMedia(kMediaIdMiss); 
+    prepareMedia(kMediaIdPunch); 
+    prepareMedia(kMediaIdFire); 
+    prepareMedia(kMediaIdKiss); 
+    prepareMedia(kMediaIdWin); 
+    prepareMedia(kMediaIdLose); 
 
     //Start Music
     playMedia(kMediaIdMusic);
@@ -461,7 +462,7 @@ user-select:none;
 }
 </style>
 </head>
-<body onLoad="loadMe()" style="margin:0px; padding:0px;">
+<body style="margin:0px; padding:0px;">
 <div id="fightScreen" style="position:relative; margin:0px; width:320px; height:416px;">
 
 <!-- Loading State -->
