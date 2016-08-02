@@ -79,20 +79,20 @@ var kTypePinkmoonaw = 4;
 var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
 var kMaxHealths = new Array(100,120,130,400,500);
 var kAttacks = new Array(5,10,15,20,50);
-var kWebIds = new Array(716,674,718,717,715);
+var kWebIds = new Array(584,578,590,587,581);
 var kKillIds = new Array(8674,8679,8680,8681,8682);
 var pPunch = new Array(30,10,10,10,10);
 var pFire = new Array(10,30,20,20,20);
 var pKiss = new Array(40,40,40,40,40);
 
 //Audio Mapping
-var kMediaIdMusic = 30737;
-var kMediaIdMiss = 29345;
-var kMediaIdPunch = 30733;
-var kMediaIdFire = 30734;
-var kMediaIdKiss = 29356;
-var kMediaIdWin = 29360;
-var kMediaIdLose = 29358;
+var kMediaIdMusic = 19355;
+var kMediaIdMiss = 19361;
+var kMediaIdPunch = 19364;
+var kMediaIdFire = 19358;
+var kMediaIdKiss = 19367;
+var kMediaIdWin = 19373;
+var kMediaIdLose = 19370;
 
 //Variables
 var kHealth;
@@ -106,18 +106,18 @@ var pName;
 var turnProgress;
 
 //Constants
-var HEALTH_ITEM_ID = 8675;
-var XP_ITEM_ID = 8676;  
-var FIRE_ABILITY_ID = 8677;
-var KISS_ABILITY_ID = 8678;
+var HEALTH_ITEM_ID = 4298;
+var XP_ITEM_ID = 4301;  
+var FIRE_ABILITY_ID = 4304;
+var KISS_ABILITY_ID = 4307;
 
 function initialize()
 {
     //Get PlayerID and GameID from URL
     var params = ARIS.parseURLParams(document.URL);
-    gameId = parseInt(params.gameId);
-    playerId = parseInt(params.playerId);
-    webPageId = parseInt(params.webPageId);
+    gameId = parseInt(params.game_id);
+    playerId = parseInt(params.player_id);
+    webPageId = parseInt(params.web_page_id);
 
     //Get Stuff from Server
     switch(webPageId)
@@ -519,7 +519,7 @@ user-select:none;
 </div>
 
 <!-- Win State -->
-<div id="win" class="scene" style="position:absolute;" onClick="ARIS.closeMe()">
+<div id="win" class="scene" style="position:absolute;" onClick="ARIS.exit()">
   <img width="100%" style="position:absolute; top:50px; left:0px;" src="images/hand.png" />
   <img id="catch" width="50%" style="position:absolute; top:40px; left:70px;" src="" />
   <div style="color:#FFFFFF; position:absolute; bottom:20px; left:115px;">
@@ -528,14 +528,14 @@ user-select:none;
 </div>
 
 <!-- Lose State -->    
-<div id="lose" class="scene" onClick="ARIS.closeMe()">
+<div id="lose" class="scene" onClick="ARIS.exit()">
   <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
       YOU LOSE
   </div>
 </div>
 
 <!-- Fire Bonus -->
-<div id="firebonus" class="bonus" onClick="ARIS.closeMe()"
+<div id="firebonus" class="bonus" onClick="ARIS.exit()"
   <img style="position:absolute;" src="images/fireButton.png" />
   <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
       <b>You have captured enough Aji to unlock their devastating fireball!</b><br /><br />It won't work well on other Aji, but other Kkomamon might be more susceptible to its power...
@@ -543,7 +543,7 @@ user-select:none;
 </div>
 
 <!-- Awesome Bonus -->
-<div id="awesomebonus" class="bonus" onClick="ARIS.closeMe()"
+<div id="awesomebonus" class="bonus" onClick="ARIS.exit()"
   <img style="position:absolute; bottom:-20px;" src="images/player.png" />
   <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
     <b>You are AWESOME!</b><br /><br />Prepare to fight the elusive Orbital, and the leviathan YongYong! You must be quick, and strong!
